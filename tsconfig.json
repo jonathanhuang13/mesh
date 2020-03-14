@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "paths": {
+      "@src/*": ["src/*"]
+    },
+    "rootDirs": ["src"],
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "downlevelIteration": true,
+    "noEmitOnError": true,
+    "strict": true,
+    "declaration": true,
+    "inlineSourceMap": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "target": "es2018",
+    "lib": ["es2018"]
+  },
+  "include": ["./src/**/*", "./typings/**/*"],
+  "exclude": []
+}
