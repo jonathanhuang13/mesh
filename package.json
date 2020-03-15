@@ -19,7 +19,10 @@
     "prettier": "prettier --loglevel error --write './src/**/*.ts'",
     "lint": "eslint --ext .ts src",
     "dev": "tsc --watch",
-    "build": "npm run transpile && npm run prettier && npm run lint"
+    "build": "npm run transpile && npm run prettier && npm run lint",
+    "db": "cypher-shell -u neo4j -p mesh",
+    "db:migrate:up": "cat migrations/init-up.cypher | cypher-shell -u neo4j -p mesh",
+    "db:migrate:down": "cat migrations/init-down.cypher | cypher-shell -u neo4j -p mesh"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
