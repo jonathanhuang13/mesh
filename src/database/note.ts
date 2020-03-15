@@ -1,4 +1,5 @@
 import * as neo4j from './neo4j';
+import { Tag } from './tag';
 
 export type NoteID = string;
 
@@ -13,6 +14,8 @@ export interface Note {
   content: string;
   references: Note[];
   referencedBy: Note[];
+
+  tags: Tag[];
 }
 
 export interface CreateNoteParams {
