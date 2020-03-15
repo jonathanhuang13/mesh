@@ -35,5 +35,8 @@
     "tslint": "^6.1.0",
     "typescript": "^3.8.3"
   },
-  "prettier": "./prettier.json"
+  "prettier": "./prettier.json",
+  "dependencies": {
+    "neo4j-driver": "^4.0.2"
+  }
 }

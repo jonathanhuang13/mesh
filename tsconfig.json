@@ -14,6 +14,7 @@
     "declaration": true,
     "inlineSourceMap": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "target": "es2018",
     "lib": ["es2018"]
