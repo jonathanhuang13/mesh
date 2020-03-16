@@ -24,7 +24,14 @@
     "db:migrate:up": "cat migrations/init-up.cypher | cypher-shell -u neo4j -p mesh",
     "db:migrate:down": "cat migrations/init-down.cypher | cypher-shell -u neo4j -p mesh"
   },
+  "dependencies": {
+    "apollo-server-express": "^2.11.0",
+    "express": "^4.17.1",
+    "graphql": "^14.6.0",
+    "neo4j-driver": "^4.0.2"
+  },
   "devDependencies": {
+    "@types/express": "^4.17.3",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.1",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
@@ -38,8 +45,5 @@
     "tslint": "^6.1.0",
     "typescript": "^3.8.3"
   },
-  "prettier": "./prettier.json",
-  "dependencies": {
-    "neo4j-driver": "^4.0.2"
-  }
+  "prettier": "./prettier.json"
 }
