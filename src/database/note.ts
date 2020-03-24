@@ -1,25 +1,25 @@
 import * as neo4j from './neo4j';
 import { Tag } from './tag';
 
-export type NoteID = string;
+export type NoteId = string;
 
 export interface Note {
-  id: NoteID;
-  name: string;
+  id: NoteId;
+  title: string;
 
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
 
   content: string;
-  references: Note[];
-  referencedBy: Note[];
+  references: NoteId[];
+  referencedBy: NoteId[];
 
   tags: Tag[];
 }
 
 export interface CreateNoteParams {
-  name: string;
+  title: string;
   content: string;
 }
 
