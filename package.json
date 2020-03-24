@@ -18,7 +18,7 @@
     "transpile": "rm -rf lib && tsc --pretty",
     "prettier": "prettier --loglevel error --write './src/**/*.ts'",
     "lint": "eslint --ext .ts src",
-    "dev": "tsc --watch",
+    "dev": "tsc-watch --onSuccess \"node lib/src/index.js\"",
     "build": "npm run transpile && npm run prettier && npm run lint",
     "db": "cypher-shell -u neo4j -p mesh",
     "db:migrate:up": "cat migrations/init-up.cypher | cypher-shell -u neo4j -p mesh",
@@ -42,6 +42,7 @@
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
     "ts-jest": "^25.2.1",
+    "tsc-watch": "^4.2.3",
     "tslint": "^6.1.0",
     "typescript": "^3.8.3"
   },
