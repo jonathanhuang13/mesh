@@ -1,6 +1,6 @@
 import { gql, ApolloServer } from 'apollo-server-express';
 
-import { notes } from './test-data';
+import { notes } from './__fixtures__/notes';
 
 const typeDefs = gql`
   type Query {
@@ -41,4 +41,3 @@ const resolvers = {
 };
 
 export const server = new ApolloServer({ typeDefs, resolvers });
-console.log(server.graphqlPath);

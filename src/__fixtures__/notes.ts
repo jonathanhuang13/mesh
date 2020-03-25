@@ -1,4 +1,4 @@
-import { Note } from './database/note';
+import { Note } from '../database/note';
 
 export const notes: Note[] = [
   {
