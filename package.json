@@ -42,6 +42,7 @@
     "@typescript-eslint/parser": "^2.23.0",
     "eslint": "^6.8.0",
     "eslint-plugin-unicorn": "^17.2.0",
+    "husky": "^4.2.3",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
@@ -54,7 +55,15 @@
   "jest": {
     "testEnvironment": "node",
     "rootDir": "src",
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "moduleNameMapper": {
+      "@src/(.*)": "<rootDir>/$1"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
   },
   "_moduleAliases": {
     "@src": "lib/src"
