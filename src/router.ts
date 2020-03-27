@@ -1,4 +1,5 @@
 import { gql, ApolloServer, IResolvers } from 'apollo-server-express';
+import * as lodash from 'lodash';
 
 import { notes } from '@src/__fixtures__/notes';
 import { Note } from '@src/database/note';
@@ -12,7 +13,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    changeTitle(id: String!, newTitle: String!): Note
+    editNote(id: String!, title: String, content: String, references: [String!]): Note
   }
 
   type Note {
@@ -27,6 +28,23 @@ const typeDefs = gql`
 
 function getNoteById(id: string): Note | undefined {
   return notes.find(n => n.id === id);
+}
+
+function addReferencedBy(noteId: string, referencedById: string): void {
+  const note = getNoteById(noteId);
+  if (!note) return;
+
+  const referencedBy = new Set(note.referencedBy);
+  referencedBy.add(referencedById);
+
+  note.referencedBy = Array.from(referencedBy);
+}
+
+function deleteReferencedBy(noteId: string, referencedById: string): void {
+  const note = getNoteById(noteId);
+  if (!note) return;
+
+  lodash.remove(note.referencedBy, n => n === referencedById);
 }
 
 const resolvers: IResolvers | Array<IResolvers> = {
@@ -54,11 +72,26 @@ const resolvers: IResolvers | Array<IResolvers> = {
     },
   },
   Mutation: {
-    changeTitle: (_: any, { id, newTitle }: { id: string; newTitle: string }) => {
-      const note = notes.find(n => n.id === id);
+    editNote: (_parent, args, _context) => {
+      const { id, ...rest } = args;
+
+      const note = getNoteById(id);
       if (!note) return;
 
-      note.title = newTitle;
+      const toUpdate = lodash.omitBy(rest, value => value === undefined);
+      lodash.forIn(toUpdate, (value, key) => {
+        if (key === 'references') {
+          const deletedReferences = lodash.difference(note.references, value);
+          const addedReferences = lodash.difference(value, note.references);
+
+          addedReferences.map(noteId => addReferencedBy(noteId, note.id));
+          deletedReferences.map(noteId => deleteReferencedBy(noteId, note.id));
+        }
+
+        note[key as keyof Note] = value;
+      });
+
+      note.updatedAt = new Date();
       return note;
     },
   },
