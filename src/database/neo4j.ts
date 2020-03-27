@@ -1,6 +1,6 @@
 import * as neo4j from 'neo4j-driver';
 
-import config from '../config';
+import config from '@src/config';
 
 export interface Cypher<T extends {}> {
   query: string;

@@ -1,6 +1,6 @@
 import { gql, ApolloServer } from 'apollo-server-express';
 
-import { notes } from './__fixtures__/notes';
+import { notes } from '@src/__fixtures__/notes';
 
 const typeDefs = gql`
   type Query {

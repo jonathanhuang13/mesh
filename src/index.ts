@@ -1,4 +1,6 @@
-import { createApp } from './app';
+import 'module-alias/register';
+
+import { createApp } from '@src/app';
 
 async function main(): Promise<void> {
   const app = await createApp();

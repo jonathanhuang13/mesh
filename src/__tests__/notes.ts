@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { createApp } from '../app';
+import { createApp } from '@src/app';
 
 describe('Get notes', () => {
   it('should get notes', async () => {

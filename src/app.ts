@@ -15,7 +15,7 @@
 
 import express from 'express';
 
-import { server } from './router';
+import { server } from '@src/router';
 
 export async function createApp(): Promise<express.Express> {
   const app = express();

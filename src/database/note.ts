@@ -1,5 +1,5 @@
-import * as neo4j from './neo4j';
-import { Tag } from './tag';
+import * as neo4j from '@src/database/neo4j';
+import { Tag } from '@src/database/tag';
 
 export type NoteId = string;
 
