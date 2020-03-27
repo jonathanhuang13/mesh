@@ -1,11 +1,13 @@
-import { gql, ApolloServer } from 'apollo-server-express';
+import { gql, ApolloServer, IResolvers } from 'apollo-server-express';
 
 import { notes } from '@src/__fixtures__/notes';
+import { Note } from '@src/database/note';
 
 const typeDefs = gql`
   type Query {
     notes: [Note]!
     note(id: String!): Note
+    references(id: String!): [Note]!
   }
 
   type Mutation {
@@ -22,11 +24,24 @@ const typeDefs = gql`
   }
 `;
 
-const resolvers = {
+function getNoteById(id: string): Note | undefined {
+  return notes.find(n => n.id === id);
+}
+
+const resolvers: IResolvers | Array<IResolvers> = {
   Query: {
     notes: () => notes,
-    note: (_: any, { id }: { id: string }) => {
-      return notes.find(n => n.id === id);
+    note: (_parent, args, _context) => {
+      const { id } = args;
+      return getNoteById(id);
+    },
+    references: (_parent, args, _context) => {
+      const { id } = args;
+
+      const note = getNoteById(id);
+      if (!note) return null;
+
+      return note.references.map(noteId => getNoteById(noteId));
     },
   },
   Mutation: {
