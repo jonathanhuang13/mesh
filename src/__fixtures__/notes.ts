@@ -12,7 +12,7 @@ export const notes: Note[] = [
     tags: [{ name: 'tag1' }],
   },
   {
-    id: '1',
+    id: '2',
     title: 'Second',
     content: '#content2',
     references: [],
