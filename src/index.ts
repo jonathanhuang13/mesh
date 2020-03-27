@@ -1,11 +1,8 @@
-import { createNote } from './database/note';
-import { closeDriver } from './database/neo4j';
+import { createApp } from './app';
 
 async function main(): Promise<void> {
-  const note = await createNote({ name: 'First note', content: '# First note' });
-  console.log(note);
-
-  await closeDriver();
+  const app = await createApp();
+  app.listen(4000, () => console.log('Server listening on port 4000'));
 }
 
 main().catch(e => {
