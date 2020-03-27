@@ -76,4 +76,21 @@ describe('Get notes', () => {
     expect(response.status).toEqual(200);
     expect(response.body.data.references).toHaveLength(1);
   });
+  it('should get referencedBy of a note', async () => {
+    const query = `query getReferences {
+      referencedBy (id: "2") {
+        id
+      }
+    }`;
+
+    const app = await createApp();
+    const response = await request(app)
+      .post('/graphql')
+      .send({
+        query,
+      });
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data.referencedBy).toHaveLength(1);
+  });
 });

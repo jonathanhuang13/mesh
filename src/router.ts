@@ -8,6 +8,7 @@ const typeDefs = gql`
     notes: [Note]!
     note(id: String!): Note
     references(id: String!): [Note]!
+    referencedBy(id: String!): [Note]!
   }
 
   type Mutation {
@@ -42,6 +43,14 @@ const resolvers: IResolvers | Array<IResolvers> = {
       if (!note) return null;
 
       return note.references.map(noteId => getNoteById(noteId));
+    },
+    referencedBy: (_parent, args, _context) => {
+      const { id } = args;
+
+      const note = getNoteById(id);
+      if (!note) return null;
+
+      return note.referencedBy.map(noteId => getNoteById(noteId));
     },
   },
   Mutation: {
