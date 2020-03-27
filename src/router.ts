@@ -5,7 +5,7 @@ import { notes } from '@src/__fixtures__/notes';
 const typeDefs = gql`
   type Query {
     notes: [Note]!
-    note(id: String!): Note!
+    note(id: String!): Note
   }
 
   type Mutation {
