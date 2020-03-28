@@ -15,7 +15,7 @@
 
 import express from 'express';
 
-import { server } from '@src/router';
+import { server } from '@src/graphql';
 
 export async function createApp(): Promise<express.Express> {
   const app = express();
