@@ -13,6 +13,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    createNote(title: String!, content: String!, references: [String!]!): Note!
     editNote(id: String!, title: String, content: String, references: [String!]): Note
   }
 
@@ -72,6 +73,25 @@ const resolvers: IResolvers | Array<IResolvers> = {
     },
   },
   Mutation: {
+    createNote: (_parent, args, _context) => {
+      const id = '4'; //FIXME
+      args.references.map((ref: string) => addReferencedBy(ref, id));
+
+      const newNote: Note = {
+        id,
+        title: args.title,
+        content: args.content,
+        references: args.references,
+        referencedBy: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        tags: [],
+      };
+
+      notes.push(newNote);
+      return newNote;
+    },
+
     editNote: (_parent, args, _context) => {
       const { id, ...rest } = args;
 
