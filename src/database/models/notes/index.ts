@@ -8,7 +8,6 @@ export interface Note {
 
   createdAt: Date;
   updatedAt: Date;
-  deletedAt?: Date;
 
   content: string;
   references: NoteId[];
@@ -27,6 +26,5 @@ export function toNote(record: any, nodeAlias: string, referenceAlias: string = 
     references: refs ?? [],
     createdAt: new Date(node.createdAt.toString()),
     updatedAt: new Date(node.updatedAt.toString()),
-    deletedAt: node.deletedAt ? new Date(node.deletedAt.toString()) : undefined,
   };
 }

@@ -121,3 +121,15 @@ export function getReferencedByQuery(params: GetReferencedByCypher): neo4j.Cyphe
 
   return { query, params, returnAlias: alias };
 }
+
+interface DeleteNoteByIdCypher {
+  id: string;
+}
+
+export function getDeleteNoteByIdQuery(params: DeleteNoteByIdCypher): neo4j.Cypher<DeleteNoteByIdCypher> {
+  const alias = 'n';
+  const query = `MATCH (${alias}: Note {id: $id}) 
+    DETACH DELETE ${alias}`;
+
+  return { query, params, returnAlias: alias };
+}

@@ -79,3 +79,13 @@ export async function getReferencedBy(id: string): Promise<Note[]> {
 
   return notes;
 }
+
+export async function deleteNoteById(id: string): Promise<Note> {
+  const note = await getNoteById(id);
+  if (!note) throw new Error(`Note ${id} does not exist`);
+
+  const cypher = cyphers.getDeleteNoteByIdQuery({ id });
+  await neo4j.write(cypher);
+
+  return note;
+}
