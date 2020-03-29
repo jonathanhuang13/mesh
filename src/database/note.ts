@@ -87,6 +87,23 @@ export async function getNotes(): Promise<Note[]> {
 
 function getListNotesQuery(): neo4j.Cypher<{}> {
   const query = `MATCH (n: Note) RETURN n`;
-
   return { query, params: {} };
+}
+
+export async function getNoteById(id: string): Promise<Note | null> {
+  const cypher = getNoteByIdQuery({ id });
+
+  const result = await neo4j.write(cypher);
+  const node = result.records[0]?.get('n').properties;
+
+  return node ? toNote(node) : null;
+}
+
+interface GetNoteByIdCypher {
+  id: string;
+}
+
+function getNoteByIdQuery(params: GetNoteByIdCypher): neo4j.Cypher<GetNoteByIdCypher> {
+  const query = `MATCH (n: Note {id: $id}) RETURN n`;
+  return { query, params };
 }
