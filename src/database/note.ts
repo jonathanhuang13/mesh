@@ -20,6 +20,15 @@ export interface Note {
   tags: Tag[];
 }
 
+function toNote(node: any): Note {
+  return {
+    ...node,
+    createdAt: new Date(node.createdAt.toString()),
+    updatedAt: new Date(node.updatedAt.toString()),
+    deletedAt: node.deletedAt ? new Date(node.deletedAt.toString()) : undefined,
+  };
+}
+
 export interface CreateNoteParams {
   title: string;
   content: string;
@@ -32,9 +41,9 @@ export async function createNote(params: CreateNoteParams): Promise<Note> {
   const cypher = getCreateNoteQuery(params);
 
   const result = await neo4j.write(cypher);
-  const note = result.records[0].get('note').properties;
+  const node = result.records[0].get('note').properties;
 
-  return note as Note;
+  return toNote(node);
 }
 
 interface CreateNoteCypher {
@@ -45,14 +54,14 @@ interface CreateNoteCypher {
   updatedAt: string;
 }
 
-function getCreateNoteQuery(params: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
+function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
   const id = uuidv4();
 
-  const cypherParams: CreateNoteCypher = {
-    ...params,
+  const params: CreateNoteCypher = {
+    ...p,
     id,
-    createdAt: params.createdAt?.toISOString() ?? new Date().toISOString(),
-    updatedAt: params.updatedAt?.toISOString() ?? new Date().toISOString(),
+    createdAt: p.createdAt?.toISOString() ?? new Date().toISOString(),
+    updatedAt: p.updatedAt?.toISOString() ?? new Date().toISOString(),
   };
 
   const query = `CREATE (note:Note {id: $id, title: $title, content: $content, createdAt: datetime($createdAt), updatedAt: datetime($updatedAt)})
@@ -61,8 +70,23 @@ function getCreateNoteQuery(params: CreateNoteParams): neo4j.Cypher<CreateNoteCy
     FOREACH (ref IN nodes(refs) | CREATE (note)-[:REFERENCES]->(ref))
     RETURN note`;
 
-  return {
-    query,
-    params: cypherParams,
-  };
+  return { query, params };
+}
+
+export async function getNotes(): Promise<Note[]> {
+  const cypher = getListNotesQuery();
+
+  const result = await neo4j.write(cypher);
+  const notes = result.records.map(r => {
+    const node = r.get('n').properties;
+    return toNote(node);
+  });
+
+  return notes;
+}
+
+function getListNotesQuery(): neo4j.Cypher<{}> {
+  const query = `MATCH (n: Note) RETURN n`;
+
+  return { query, params: {} };
 }
