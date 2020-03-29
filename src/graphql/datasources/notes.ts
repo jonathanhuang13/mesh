@@ -2,7 +2,7 @@ import * as lodash from 'lodash';
 import bluebird from 'bluebird';
 import { DataSource } from 'apollo-datasource';
 
-import { Note } from '@src/database/note';
+import { Note } from '@src/database/models/notes';
 
 export interface CreateNoteParams {
   title: string;
