@@ -56,6 +56,9 @@ function getCreateNoteQuery(params: CreateNoteParams): neo4j.Cypher<CreateNoteCy
   };
 
   const query = `CREATE (note:Note {id: $id, title: $title, content: $content, createdAt: datetime($createdAt), updatedAt: datetime($updatedAt)})
+    WITH note
+    MATCH refs=(r:Note) WHERE r.id IN $references
+    FOREACH (ref IN nodes(refs) | CREATE (note)-[:REFERENCES]->(ref))
     RETURN note`;
 
   return {
