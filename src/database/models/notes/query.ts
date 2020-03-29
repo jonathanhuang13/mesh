@@ -15,9 +15,9 @@ export async function createNote(params: CreateNoteParams): Promise<Note> {
   const cypher = cyphers.getCreateNoteQuery(params);
 
   const result = await neo4j.write(cypher);
-  const node = result.records[0].get(cypher.returnAlias).properties;
+  const record = result.records[0]?.toObject();
 
-  return toNote(node);
+  return toNote(record, cypher.returnAlias);
 }
 
 export interface UpdateNoteParams {
@@ -30,9 +30,9 @@ export async function updateNote(id: string, params: UpdateNoteParams): Promise<
   const cypher = cyphers.getUpdateNoteQuery(id, params);
 
   const result = await neo4j.write(cypher);
-  const node = result.records[0].get(cypher.returnAlias).properties;
+  const record = result.records[0]?.toObject();
 
-  return toNote(node);
+  return toNote(record, cypher.returnAlias);
 }
 
 export async function getNotes(): Promise<Note[]> {
@@ -40,8 +40,8 @@ export async function getNotes(): Promise<Note[]> {
 
   const result = await neo4j.write(cypher);
   const notes = result.records.map(r => {
-    const node = r.get(cypher.returnAlias).properties;
-    return toNote(node);
+    const result = r.toObject();
+    return toNote(result, cypher.returnAlias);
   });
 
   return notes;
@@ -51,9 +51,9 @@ export async function getNoteById(id: string): Promise<Note | null> {
   const cypher = cyphers.getNoteByIdQuery({ id });
 
   const result = await neo4j.write(cypher);
-  const node = result.records[0]?.get(cypher.returnAlias).properties;
+  const record = result.records[0]?.toObject();
 
-  return node ? toNote(node) : null;
+  return record ? toNote(record, cypher.returnAlias) : null;
 }
 
 export async function getReferences(id: string): Promise<Note[]> {
@@ -61,8 +61,8 @@ export async function getReferences(id: string): Promise<Note[]> {
 
   const result = await neo4j.write(cypher);
   const notes = result.records.map(r => {
-    const node = r.get(cypher.returnAlias).properties;
-    return toNote(node);
+    const result = r.toObject();
+    return toNote(result, cypher.returnAlias);
   });
 
   return notes;
@@ -73,8 +73,8 @@ export async function getReferencedBy(id: string): Promise<Note[]> {
 
   const result = await neo4j.write(cypher);
   const notes = result.records.map(r => {
-    const node = r.get(cypher.returnAlias).properties;
-    return toNote(node);
+    const result = r.toObject();
+    return toNote(result, cypher.returnAlias);
   });
 
   return notes;

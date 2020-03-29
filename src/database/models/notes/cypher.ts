@@ -27,7 +27,7 @@ export function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNote
     WITH ${alias} 
     MATCH refs=(r:Note) WHERE r.id IN $references
     FOREACH (ref IN nodes(refs) | CREATE ( ${alias})-[:REFERENCES]->(ref))
-    RETURN  ${alias}`;
+    RETURN  ${alias}, collect(r.id) AS references`;
 
   return { query, params, returnAlias: alias };
 }
@@ -55,8 +55,8 @@ export function getUpdateNoteQuery(id: string, p: UpdateNoteParams): neo4j.Cyphe
       DELETE l
       
       WITH ${alias}
-      MATCH refs=(ref:Note) WHERE ref.id IN $references
-      FOREACH (r IN nodes(refs) | MERGE (${alias})-[:REFERENCES]->(r))
+      MATCH refs=(r:Note) WHERE r.id IN $references
+      FOREACH (ref IN nodes(refs) | MERGE (${alias})-[:REFERENCES]->(ref))
       `;
   }
 
@@ -64,15 +64,21 @@ export function getUpdateNoteQuery(id: string, p: UpdateNoteParams): neo4j.Cyphe
     SET ${alias}.updatedAt = $updatedAt
     ${titleQuery}
     ${contentQuery}
+
     ${referencesQuery}
-    RETURN ${alias}, collect(ref.id) as references`;
+
+    WITH ${alias}
+    OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+    RETURN ${alias}, collect(r.id) as references`;
 
   return { query, params, returnAlias: alias };
 }
 
 export function getListNotesQuery(): neo4j.Cypher<{}> {
   const alias = 'n';
-  const query = `MATCH (${alias}: Note) RETURN ${alias}`;
+  const query = `MATCH (${alias}: Note) 
+    OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+    RETURN ${alias}, collect(r.id) AS references`;
 
   return { query, params: {}, returnAlias: alias };
 }
@@ -83,7 +89,9 @@ interface GetNoteByIdCypher {
 
 export function getNoteByIdQuery(params: GetNoteByIdCypher): neo4j.Cypher<GetNoteByIdCypher> {
   const alias = 'n';
-  const query = `MATCH (${alias}: Note {id: $id}) RETURN ${alias}`;
+  const query = `MATCH (${alias}: Note {id: $id})
+  OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+  RETURN ${alias}, collect(r.id) AS references`;
 
   return { query, params, returnAlias: alias };
 }
@@ -94,7 +102,9 @@ interface GetReferencesCypher {
 
 export function getReferencesQuery(params: GetReferencesCypher): neo4j.Cypher<GetReferencesCypher> {
   const alias = 'r';
-  const query = `MATCH (n: Note {id: $id})-[:REFERENCES]->(${alias}: Note) RETURN ${alias}`;
+  const query = `MATCH (n: Note {id: $id})-[:REFERENCES]->(${alias}: Note) 
+  OPTIONAL MATCH (${alias})-[:REFERENCES]->(second:Note)
+  RETURN ${alias}, collect(second.id) AS references`;
 
   return { query, params, returnAlias: alias };
 }
@@ -105,7 +115,9 @@ interface GetReferencedByCypher {
 
 export function getReferencedByQuery(params: GetReferencedByCypher): neo4j.Cypher<GetReferencedByCypher> {
   const alias = 'r';
-  const query = `MATCH (n: Note {id: $id})<-[:REFERENCES]-(${alias}: Note) RETURN ${alias}`;
+  const query = `MATCH (n: Note {id: $id})<-[:REFERENCES]-(${alias}: Note) 
+    OPTIONAL MATCH (${alias})-[:REFERENCES]->(second:Note)
+    RETURN ${alias}, collect(second.id) AS references`;
 
   return { query, params, returnAlias: alias };
 }

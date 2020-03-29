@@ -17,9 +17,14 @@ export interface Note {
   tags: Tag[];
 }
 
-export function toNote(node: any): Note {
+export function toNote(record: any, nodeAlias: string, referenceAlias: string = 'references'): Note {
+  const node = record[nodeAlias].properties;
+  const refs = record[referenceAlias];
+  if (!refs) throw new Error(`Could not find references property on node ${node.id}`);
+
   return {
     ...node,
+    references: refs ?? [],
     createdAt: new Date(node.createdAt.toString()),
     updatedAt: new Date(node.updatedAt.toString()),
     deletedAt: node.deletedAt ? new Date(node.deletedAt.toString()) : undefined,
