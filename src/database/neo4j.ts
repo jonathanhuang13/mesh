@@ -5,6 +5,7 @@ import config from '@src/config';
 export interface Cypher<T extends {}> {
   query: string;
   params: T;
+  returnAlias: string;
 }
 
 const { host, username, password } = config.database;
