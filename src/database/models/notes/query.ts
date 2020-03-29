@@ -1,7 +1,7 @@
 import * as neo4j from '@src/database/neo4j';
 
 import { Note, NoteId, toNote } from '@src/database/models/notes';
-import { getCreateNoteQuery, getListNotesQuery, getNoteByIdQuery } from '@src/database/models/notes/cypher';
+import * as cyphers from '@src/database/models/notes/cypher';
 
 export interface CreateNoteParams {
   title: string;
@@ -12,20 +12,20 @@ export interface CreateNoteParams {
 }
 
 export async function createNote(params: CreateNoteParams): Promise<Note> {
-  const cypher = getCreateNoteQuery(params);
+  const cypher = cyphers.getCreateNoteQuery(params);
 
   const result = await neo4j.write(cypher);
-  const node = result.records[0].get('note').properties;
+  const node = result.records[0].get(cypher.returnAlias).properties;
 
   return toNote(node);
 }
 
 export async function getNotes(): Promise<Note[]> {
-  const cypher = getListNotesQuery();
+  const cypher = cyphers.getListNotesQuery();
 
   const result = await neo4j.write(cypher);
   const notes = result.records.map(r => {
-    const node = r.get('n').properties;
+    const node = r.get(cypher.returnAlias).properties;
     return toNote(node);
   });
 
@@ -33,10 +33,34 @@ export async function getNotes(): Promise<Note[]> {
 }
 
 export async function getNoteById(id: string): Promise<Note | null> {
-  const cypher = getNoteByIdQuery({ id });
+  const cypher = cyphers.getNoteByIdQuery({ id });
 
   const result = await neo4j.write(cypher);
-  const node = result.records[0]?.get('n').properties;
+  const node = result.records[0]?.get(cypher.returnAlias).properties;
 
   return node ? toNote(node) : null;
+}
+
+export async function getReferences(id: string): Promise<Note[]> {
+  const cypher = cyphers.getReferencesQuery({ id });
+
+  const result = await neo4j.write(cypher);
+  const notes = result.records.map(r => {
+    const node = r.get(cypher.returnAlias).properties;
+    return toNote(node);
+  });
+
+  return notes;
+}
+
+export async function getReferencedBy(id: string): Promise<Note[]> {
+  const cypher = cyphers.getReferencedByQuery({ id });
+
+  const result = await neo4j.write(cypher);
+  const notes = result.records.map(r => {
+    const node = r.get(cypher.returnAlias).properties;
+    return toNote(node);
+  });
+
+  return notes;
 }
