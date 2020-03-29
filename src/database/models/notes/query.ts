@@ -20,6 +20,21 @@ export async function createNote(params: CreateNoteParams): Promise<Note> {
   return toNote(node);
 }
 
+export interface UpdateNoteParams {
+  title?: string;
+  content?: string;
+  references?: NoteId[];
+}
+
+export async function updateNote(id: string, params: UpdateNoteParams): Promise<Note> {
+  const cypher = cyphers.getUpdateNoteQuery(id, params);
+
+  const result = await neo4j.write(cypher);
+  const node = result.records[0].get(cypher.returnAlias).properties;
+
+  return toNote(node);
+}
+
 export async function getNotes(): Promise<Note[]> {
   const cypher = cyphers.getListNotesQuery();
 
