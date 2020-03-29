@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import * as neo4j from '@src/database/neo4j';
 import { Tag } from '@src/database/tag';
 
@@ -21,6 +23,9 @@ export interface Note {
 export interface CreateNoteParams {
   title: string;
   content: string;
+  references: NoteId[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export async function createNote(params: CreateNoteParams): Promise<Note> {
@@ -32,9 +37,29 @@ export async function createNote(params: CreateNoteParams): Promise<Note> {
   return note as Note;
 }
 
-function getCreateNoteQuery(params: CreateNoteParams): neo4j.Cypher<CreateNoteParams> {
+interface CreateNoteCypher {
+  id: string;
+  content: string;
+  references: NoteId[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+function getCreateNoteQuery(params: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
+  const id = uuidv4();
+
+  const cypherParams: CreateNoteCypher = {
+    ...params,
+    id,
+    createdAt: params.createdAt?.toISOString() ?? new Date().toISOString(),
+    updatedAt: params.updatedAt?.toISOString() ?? new Date().toISOString(),
+  };
+
+  const query = `CREATE (note:Note {id: $id, title: $title, content: $content, createdAt: datetime($createdAt), updatedAt: datetime($updatedAt)})
+    RETURN note`;
+
   return {
-    query: 'CREATE (note:Note {name: $name, content: $content}) RETURN note',
-    params,
+    query,
+    params: cypherParams,
   };
 }
