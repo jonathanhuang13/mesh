@@ -1,5 +1,7 @@
 import * as neo4j from 'neo4j-driver';
 
+import { DatabaseConfig } from '@src/config';
+
 export interface Cypher<T extends {}> {
   query: string;
   params: T;
@@ -9,7 +11,9 @@ export interface Cypher<T extends {}> {
 export class Neo4jInstance {
   private driver: neo4j.Driver;
 
-  constructor(host: string, username: string, password: string) {
+  constructor(config: DatabaseConfig) {
+    const { host, username, password } = config;
+
     this.driver = neo4j.driver(host, neo4j.auth.basic(username, password));
   }
 
