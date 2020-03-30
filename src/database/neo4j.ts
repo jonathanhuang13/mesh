@@ -1,32 +1,34 @@
 import * as neo4j from 'neo4j-driver';
 
-import config from '@src/config';
-
 export interface Cypher<T extends {}> {
   query: string;
   params: T;
   returnAlias: string;
 }
 
-const { host, username, password } = config.database;
-const driver = neo4j.driver(host, neo4j.auth.basic(username, password));
+export class Neo4jInstance {
+  private driver: neo4j.Driver;
 
-export async function closeDriver(): Promise<void> {
-  driver.close();
-}
+  constructor(host: string, username: string, password: string) {
+    this.driver = neo4j.driver(host, neo4j.auth.basic(username, password));
+  }
 
-export async function getSession(): Promise<neo4j.Session> {
-  return driver.session({ defaultAccessMode: 'WRITE' });
-}
+  async closeDriver(): Promise<void> {
+    this.driver.close();
+  }
 
-export async function closeSession(session: neo4j.Session): Promise<void> {
-  return session.close();
-}
+  async write<T>(cypher: Cypher<T>): Promise<neo4j.QueryResult> {
+    const session = await this.getSession();
+    const result = await session.writeTransaction(tx => tx.run(cypher.query, cypher.params));
+    await this.closeSession(session);
 
-export async function write<T>(cypher: Cypher<T>): Promise<neo4j.QueryResult> {
-  const session = await getSession();
-  const result = await session.writeTransaction(tx => tx.run(cypher.query, cypher.params));
-  await closeSession(session);
+    return result;
+  }
+  private async getSession(): Promise<neo4j.Session> {
+    return this.driver.session({ defaultAccessMode: 'WRITE' });
+  }
 
-  return result;
+  private async closeSession(session: neo4j.Session): Promise<void> {
+    return session.close();
+  }
 }

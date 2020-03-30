@@ -1,8 +1,7 @@
 import * as neo4j from '@src/database/neo4j';
 import { v4 as uuidv4 } from 'uuid';
 
-import { NoteId } from '@src/database/models/notes';
-import { CreateNoteParams, UpdateNoteParams } from '@src/database/models/notes/query';
+import { NoteId, CreateNoteParams, UpdateNoteParams } from '@src/database/notes';
 
 interface CreateNoteCypher {
   id: string;
@@ -15,11 +14,12 @@ interface CreateNoteCypher {
 export function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
   const id = uuidv4();
 
+  const now = new Date().toISOString();
   const params: CreateNoteCypher = {
     ...p,
     id,
-    createdAt: p.createdAt?.toISOString() ?? new Date().toISOString(),
-    updatedAt: p.updatedAt?.toISOString() ?? new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   };
 
   const alias = 'n';
