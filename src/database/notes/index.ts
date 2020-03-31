@@ -18,14 +18,25 @@ export interface Note {
   tags: Tag[];
 }
 
-function toNote(record: any, nodeAlias: string, referenceAlias: string = 'references'): Note {
+function toNote(
+  record: any,
+  nodeAlias: string,
+  referenceAlias: string = 'references',
+  referencedByAlias: string = 'referencedBy',
+): Note {
   const node = record[nodeAlias].properties;
+
   const refs = record[referenceAlias];
   if (!refs) throw new Error(`Could not find references property on node ${node.id}`);
+
+  const refBy = record[referencedByAlias];
+  // TODO: add refby for all other queries
+  // if (!refBy) throw new Error(`Could not find referencedBy property on node ${node.id}`);
 
   return {
     ...node,
     references: refs ?? [],
+    referencedBy: refBy ?? [],
     createdAt: new Date(node.createdAt.toString()),
     updatedAt: new Date(node.updatedAt.toString()),
   };
@@ -42,6 +53,7 @@ export async function createNote(connection: Neo4jInstance, params: CreateNotePa
 
   const result = await connection.write(cypher);
   const record = result.records[0]?.toObject();
+  if (!record) throw new Error(`Could not get record ${result}`);
 
   return toNote(record, cypher.returnAlias);
 }
@@ -53,6 +65,9 @@ export async function updateNote(
   id: string,
   params: UpdateNoteParams,
 ): Promise<Note> {
+  const note = await getNoteById(connection, id);
+  if (!note) throw new Error(`Note ${id} does not exist`);
+
   const cypher = cyphers.getUpdateNoteQuery(id, params);
 
   const result = await connection.write(cypher);

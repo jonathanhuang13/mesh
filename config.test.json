@@ -1,0 +1,8 @@
+{
+  "env": "test",
+  "database": {
+    "host": "neo4j://localhost",
+    "username": "neo4j",
+    "password": "mesh"
+  }
+}

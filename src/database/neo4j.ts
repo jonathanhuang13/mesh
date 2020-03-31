@@ -9,16 +9,24 @@ export interface Cypher<T extends {}> {
 }
 
 export class Neo4jInstance {
-  private driver: neo4j.Driver;
+  private driver?: neo4j.Driver;
+  private config: DatabaseConfig;
 
   constructor(config: DatabaseConfig) {
+    this.config = config;
+
+    this.openDriver(this.config);
+  }
+
+  private openDriver(config: DatabaseConfig): neo4j.Driver {
     const { host, username, password } = config;
 
     this.driver = neo4j.driver(host, neo4j.auth.basic(username, password));
+    return this.driver;
   }
 
   async closeDriver(): Promise<void> {
-    this.driver.close();
+    this.driver?.close();
   }
 
   async write<T>(cypher: Cypher<T>): Promise<neo4j.QueryResult> {
@@ -29,7 +37,10 @@ export class Neo4jInstance {
     return result;
   }
   private async getSession(): Promise<neo4j.Session> {
-    return this.driver.session({ defaultAccessMode: 'WRITE' });
+    let driver = this.driver;
+    if (!driver) driver = this.openDriver(this.config);
+
+    return driver.session({ defaultAccessMode: 'WRITE' });
   }
 
   private async closeSession(session: neo4j.Session): Promise<void> {
