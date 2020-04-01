@@ -4,6 +4,7 @@ export const CREATE_QUERY = `mutation createNote($title: String!, $content: Stri
       createNote (title: $title, content: $content, references: $references) {
         id
         references
+        referencedBy
       }
     }`;
 
@@ -42,12 +43,16 @@ export const GET_BY_ID_QUERY = `query getNote($id: String!) {
 export const GET_REFERENCES = `query getReferences($id: String!) {
       references (id: $id) {
         id
+        references
+        referencedBy
       }
     }`;
 
 export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
       referencedBy (id: $id) {
         id
+        references
+        referencedBy
       }
     }`;
 

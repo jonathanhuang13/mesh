@@ -5,6 +5,7 @@ import express from 'express';
 import { createApp } from '@src/app';
 import * as fixtures from '@src/__fixtures__/notes';
 import { getDataSources } from '@src/graphql/datasources';
+import { Note } from '@src/database';
 
 let app: express.Express | undefined;
 
@@ -92,6 +93,7 @@ describe('Get notes', () => {
     expect(response.status).toEqual(200);
     expect(response.body.data).toBeTruthy();
     expect(response.body.data.notes).toHaveLength(numPrevious + 3);
+    expect(response.body.data.notes[0].referencedBy).toBeTruthy();
   });
 
   it('should get one note', async () => {
@@ -102,6 +104,8 @@ describe('Get notes', () => {
     const response = await sendRequest(fixtures.GET_BY_ID_QUERY, variable);
     expect(response.status).toEqual(200);
     expect(response.body.data.note).toBeTruthy();
+    expect(response.body.data.note.referencedBy).toHaveLength(1);
+    expect(response.body.data.note.referencedBy).toContain(initialIds[2]);
   });
 
   it('should not throw if no note exists', async () => {
@@ -122,6 +126,8 @@ describe('Get notes', () => {
     const response = await sendRequest(fixtures.GET_REFERENCES, variable);
     expect(response.status).toEqual(200);
     expect(response.body.data.references).toHaveLength(1);
+    expect(response.body.data.references[0].references).toHaveLength(0);
+    expect(response.body.data.references[0].referencedBy).toHaveLength(2);
   });
 
   it('should get referencedBy of a note', async () => {
@@ -131,6 +137,11 @@ describe('Get notes', () => {
     const response = await sendRequest(fixtures.GET_REFERENCED_BY, variable);
     expect(response.status).toEqual(200);
     expect(response.body.data.referencedBy).toHaveLength(2);
+
+    const note1 = response.body.data.referencedBy.filter((n: Note) => n.id === initialIds[1])[0];
+    expect(note1).toBeTruthy();
+    expect(note1.references).toHaveLength(1);
+    expect(note1.referencedBy).toHaveLength(1);
   });
 });
 
@@ -143,10 +154,13 @@ describe('Create note', () => {
     };
 
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);
-    expect(response.status).toEqual(200);
-    expect(response.body.data.createNote).toBeTruthy();
     const { id } = response.body.data.createNote;
     initialIds.push(id);
+
+    expect(response.status).toEqual(200);
+    expect(response.body.data.createNote).toBeTruthy();
+    expect(response.body.data.createNote.references).toHaveLength(1);
+    expect(response.body.data.createNote.referencedBy).toHaveLength(0);
 
     const var2 = {
       id: initialIds[2],
