@@ -1,5 +1,6 @@
 
 {
+  "env": "local",
   "database": {
     "host": "neo4j://localhost",
     "username": "",

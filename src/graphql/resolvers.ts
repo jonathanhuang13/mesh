@@ -24,6 +24,10 @@ const resolvers: IResolvers | Array<IResolvers> = {
     editNote: async (_parent, args, { dataSources }) => {
       return dataSources.notes.updateNote(args);
     },
+
+    deleteNote: async (_parent, args, { dataSources }) => {
+      return dataSources.notes.deleteNote(args.id);
+    },
   },
 };
 
