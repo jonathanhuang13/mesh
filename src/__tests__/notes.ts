@@ -3,9 +3,9 @@ import Bluebird from 'bluebird';
 import express from 'express';
 
 import { createApp } from '@src/app';
+import { Note } from '@src/database/notes';
+import database from '@src/database';
 import * as fixtures from '@src/__fixtures__/notes';
-import { getDataSources } from '@src/graphql/datasources';
-import { Note } from '@src/database';
 
 let app: express.Express | undefined;
 
@@ -29,9 +29,7 @@ async function sendRequest(query: string, variables?: { [k: string]: string | st
 }
 
 afterAll(async () => {
-  const dataSources = getDataSources();
-  await dataSources.notes.close();
-
+  await database.close();
   app = undefined;
 });
 

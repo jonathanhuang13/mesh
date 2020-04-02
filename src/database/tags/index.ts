@@ -1,4 +1,4 @@
-import { Neo4jInstance } from '@src/database';
+import { Neo4jInstance } from '@src/database/neo4j';
 import * as cyphers from '@src/database/tags/cypher';
 
 export type TagId = string;

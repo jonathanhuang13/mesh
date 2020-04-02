@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import * as neo4j from '@src/database/neo4j';
-import { CreateTagParams, UpdateTagParams, TagId } from '@src/database';
-import {} from '.';
+import { CreateTagParams, UpdateTagParams, TagId } from '@src/database/tags';
 
 interface CreateTagCypher {
   id: TagId;

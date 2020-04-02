@@ -1,7 +1,8 @@
 import * as neo4j from '@src/database/neo4j';
 import { v4 as uuidv4 } from 'uuid';
 
-import { NoteId, CreateNoteParams, UpdateNoteParams, TagId } from '@src/database';
+import { NoteId, CreateNoteParams, UpdateNoteParams } from '@src/database/notes';
+import { TagId } from '@src/database/tags';
 
 interface CreateNoteCypher {
   id: NoteId;

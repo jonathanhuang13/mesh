@@ -1,5 +1,5 @@
 import { Note } from '@src/database/notes';
-import { Tag } from '@src/database';
+import { Tag } from '@src/database/tags';
 
 export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!) {
       createNote (title: $title, content: $content, references: $references) {
