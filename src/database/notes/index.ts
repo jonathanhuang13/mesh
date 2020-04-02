@@ -57,7 +57,7 @@ export type UpdateNoteParams = Partial<CreateNoteParams>;
 
 export async function updateNote(
   connection: Neo4jInstance,
-  id: string,
+  id: NoteId,
   params: UpdateNoteParams,
 ): Promise<Note> {
   const note = await getNoteById(connection, id);
@@ -83,8 +83,8 @@ export async function getNotes(connection: Neo4jInstance): Promise<Note[]> {
   return notes;
 }
 
-export async function getNoteById(connection: Neo4jInstance, id: string): Promise<Note | null> {
-  const cypher = cyphers.getNoteByIdQuery({ id });
+export async function getNoteById(connection: Neo4jInstance, id: NoteId): Promise<Note | null> {
+  const cypher = cyphers.getNoteByIdQuery(id);
 
   const result = await connection.write(cypher);
   const record = result.records[0]?.toObject();
@@ -92,7 +92,7 @@ export async function getNoteById(connection: Neo4jInstance, id: string): Promis
   return record ? toNote(record, cypher.returnAlias) : null;
 }
 
-export async function getReferences(connection: Neo4jInstance, id: string): Promise<Note[]> {
+export async function getReferences(connection: Neo4jInstance, id: NoteId): Promise<Note[]> {
   const cypher = cyphers.getReferencesQuery({ id });
 
   const result = await connection.write(cypher);
@@ -104,7 +104,7 @@ export async function getReferences(connection: Neo4jInstance, id: string): Prom
   return notes;
 }
 
-export async function getReferencedBy(connection: Neo4jInstance, id: string): Promise<Note[]> {
+export async function getReferencedBy(connection: Neo4jInstance, id: NoteId): Promise<Note[]> {
   const cypher = cyphers.getReferencedByQuery({ id });
 
   const result = await connection.write(cypher);
@@ -116,11 +116,11 @@ export async function getReferencedBy(connection: Neo4jInstance, id: string): Pr
   return notes;
 }
 
-export async function deleteNoteById(connection: Neo4jInstance, id: string): Promise<Note> {
+export async function deleteNoteById(connection: Neo4jInstance, id: NoteId): Promise<Note> {
   const note = await getNoteById(connection, id);
   if (!note) throw new Error(`Note ${id} does not exist`);
 
-  const cypher = cyphers.getDeleteNoteByIdQuery({ id });
+  const cypher = cyphers.getDeleteNoteByIdQuery(id);
   await connection.write(cypher);
 
   return note;
