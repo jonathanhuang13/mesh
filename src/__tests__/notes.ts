@@ -47,6 +47,7 @@ beforeEach(async () => {
     title: 'First',
     content: '#first',
     references: [],
+    tags: [],
   };
 
   const response = await sendRequest(fixtures.CREATE_QUERY, var1);
@@ -58,6 +59,7 @@ beforeEach(async () => {
     title: 'Second',
     content: '#second',
     references: [id],
+    tags: [],
   };
 
   const response2 = await sendRequest(fixtures.CREATE_QUERY, var2);
@@ -69,6 +71,7 @@ beforeEach(async () => {
     title: 'Third',
     content: '#third',
     references: [id, id2],
+    tags: [],
   };
 
   const response3 = await sendRequest(fixtures.CREATE_QUERY, var3);
@@ -151,6 +154,7 @@ describe('Create note', () => {
       title: 'Fourth',
       content: '#fourth',
       references: [initialIds[2]],
+      tags: [],
     };
 
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);

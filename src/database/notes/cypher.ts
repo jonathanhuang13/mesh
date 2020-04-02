@@ -1,16 +1,18 @@
 import * as neo4j from '@src/database/neo4j';
 import { v4 as uuidv4 } from 'uuid';
 
-import { NoteId, CreateNoteParams, UpdateNoteParams } from '@src/database/notes';
+import { NoteId, CreateNoteParams, UpdateNoteParams, TagId } from '@src/database';
 
 interface CreateNoteCypher {
-  id: string;
+  id: NoteId;
   content: string;
   references: NoteId[];
+  tags: TagId[];
   createdAt: string;
   updatedAt: string;
 }
 
+// Note: All tags and references must be created before creating a note
 export function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
   const id = uuidv4();
 

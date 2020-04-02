@@ -7,6 +7,7 @@ export interface CreateNoteParams {
   title: string;
   content: string;
   references: string[];
+  tags: string[];
 }
 
 export type UpdateNoteParams = { id: string } & Partial<CreateNoteParams>;
