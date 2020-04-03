@@ -17,6 +17,8 @@ const typeDefs = gql`
     deleteNote(id: String!): Note
 
     createTag(name: String!): Tag!
+    editTag(id: String!, name: String): Tag
+    deleteTag(id: String!): Tag
   }
 
   type Note {

@@ -1,16 +1,17 @@
 import { DataSource } from 'apollo-datasource';
 
 import database from '@src/database';
-import { Note } from '@src/database/notes';
+import { Note, NoteId } from '@src/database/notes';
+import { TagId } from '@src/database/tags';
 
 export interface CreateNoteParams {
   title: string;
   content: string;
   references: string[];
-  tags: string[];
+  tags: TagId[];
 }
 
-export type UpdateNoteParams = { id: string } & Partial<CreateNoteParams>;
+export type UpdateNoteParams = { id: NoteId } & Partial<CreateNoteParams>;
 
 export class NotesDataSource extends DataSource {
   constructor() {
@@ -21,15 +22,15 @@ export class NotesDataSource extends DataSource {
     return database.getNotes();
   }
 
-  async getNoteById(id: string): Promise<Note | null> {
+  async getNoteById(id: NoteId): Promise<Note | null> {
     return database.getNoteById(id);
   }
 
-  async getReferences(id: string): Promise<Note[]> {
+  async getReferences(id: NoteId): Promise<Note[]> {
     return database.getReferences(id);
   }
 
-  async getReferencedBy(id: string): Promise<Note[]> {
+  async getReferencedBy(id: NoteId): Promise<Note[]> {
     return database.getReferencedBy(id);
   }
 
@@ -41,7 +42,7 @@ export class NotesDataSource extends DataSource {
     return database.updateNote(params.id, params);
   }
 
-  async deleteNote(id: string): Promise<Note> {
+  async deleteNote(id: NoteId): Promise<Note> {
     return database.deleteNoteById(id);
   }
 }
