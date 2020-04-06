@@ -1,4 +1,5 @@
 import { Note } from '@src/database/notes';
+import { Tag } from '@src/database/tags';
 
 export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!) {
       createNote (title: $title, content: $content, references: $references) {
@@ -56,6 +57,21 @@ export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
       }
     }`;
 
+export const tags: Tag[] = [
+  {
+    id: '1',
+    name: 'tag1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: '2',
+    name: 'tag2',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
 export const notes: Note[] = [
   {
     id: '1',
@@ -65,7 +81,7 @@ export const notes: Note[] = [
     referencedBy: ['2'],
     createdAt: new Date(),
     updatedAt: new Date(),
-    tags: [{ name: 'tag1' }],
+    tags: [tags[0]],
   },
   {
     id: '2',
@@ -75,7 +91,7 @@ export const notes: Note[] = [
     referencedBy: ['1'],
     createdAt: new Date(),
     updatedAt: new Date(),
-    tags: [{ name: 'tag1' }, { name: 'tag2' }],
+    tags: [tags[0], tags[1]],
   },
   {
     id: '3',
