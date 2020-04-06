@@ -1,5 +1,5 @@
 import { Neo4jInstance } from '@src/database/neo4j';
-import { Tag, TagId } from '@src/database/tags';
+import { TagId } from '@src/database/tags';
 import * as cyphers from '@src/database/notes/cypher';
 
 export type NoteId = string;
@@ -15,7 +15,7 @@ export interface Note {
   references: NoteId[];
   referencedBy: NoteId[];
 
-  tags: Tag[];
+  tags: TagId[];
 }
 
 function toNote(record: any, nodeAlias: string): Note {
@@ -27,10 +27,14 @@ function toNote(record: any, nodeAlias: string): Note {
   const refBy = record['referencedBy'];
   if (!refBy) throw new Error(`Could not find referencedBy property on node ${node.id}`);
 
+  const tags = record['tags'];
+  if (!tags) throw new Error(`Could not find tags property on node ${node.id}`);
+
   return {
     ...node,
-    references: refs ?? [],
-    referencedBy: refBy ?? [],
+    references: refs,
+    referencedBy: refBy,
+    tags,
     createdAt: new Date(node.createdAt.toString()),
     updatedAt: new Date(node.updatedAt.toString()),
   };

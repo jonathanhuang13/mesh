@@ -94,9 +94,14 @@ export function getListNotesQuery(params: ListNotesCypher): neo4j.Cypher<ListNot
   const query = `${matchQuery}
     WITH ${alias}
     OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+
     WITH ${alias}, COLLECT(DISTINCT r.id) AS references
     OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
-    RETURN ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy`;
+
+    WITH ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy
+    OPTIONAL MATCH (${alias})-[:IS_TAGGED_WITH]-(t:Tag)
+    
+    RETURN ${alias}, references, referencedBy, COLLECT(DISTINCT t.id) AS tags`;
 
   return { query, params, returnAlias: alias };
 }
@@ -109,13 +114,17 @@ export function getNoteByIdQuery(id: NoteId): neo4j.Cypher<GetNoteByIdCypher> {
   const params = { id };
 
   const alias = 'n';
-  const query = `MATCH (${alias}: Note)
-    WHERE ${alias}.id = $id
+  const query = `MATCH (${alias}: Note) WHERE ${alias}.id = $id
     WITH n
     OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+
     WITH n, COLLECT(DISTINCT r.id) AS references
     OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
-    RETURN ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy`;
+
+    WITH ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy
+    OPTIONAL MATCH (${alias})-[:IS_TAGGED_WITH]-(t:Tag)
+
+    RETURN ${alias}, references, referencedBy, COLLECT(DISTINCT t.id) AS tags`;
 
   return { query, params, returnAlias: alias };
 }
