@@ -44,6 +44,16 @@ const resolvers: IResolvers | Array<IResolvers> = {
       return dataSources.tags.deleteTag(args.id);
     },
   },
+
+  Note: {
+    references: (parent, _args, { dataSources }) => {
+      return dataSources.notes.getNotes(parent.references);
+    },
+
+    referencedBy: (parent, _args, { dataSources }) => {
+      return dataSources.notes.getNotes(parent.referencedBy);
+    },
+  },
 };
 
 export default resolvers;

@@ -4,8 +4,12 @@ import { Tag } from '@src/database/tags';
 export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!) {
       createNote (title: $title, content: $content, references: $references) {
         id
-        references
-        referencedBy
+        references {
+          id
+        }
+        referencedBy {
+          id
+        }
       }
     }`;
 
@@ -13,7 +17,9 @@ export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $c
       editNote (id: $id, title: $title, content: $content, references: $references) {
         id
         title
-        references
+        references {
+          id
+        }
       }
     }`;
 
@@ -27,8 +33,12 @@ export const LIST_QUERY = `query getNotes {
       notes {
         id
         title
-        references
-        referencedBy
+        references {
+          id
+        }
+        referencedBy {
+          id
+        }
       }
     }
     `;
@@ -36,24 +46,36 @@ export const LIST_QUERY = `query getNotes {
 export const GET_BY_ID_QUERY = `query getNote($id: String!) {
       note (id: $id) {
         id
-        references
-        referencedBy
+        references {
+          id
+        }
+        referencedBy {
+          id
+        }
       }
     }`;
 
 export const GET_REFERENCES = `query getReferences($id: String!) {
       references (id: $id) {
         id
-        references
-        referencedBy
+        references {
+          id
+        }
+        referencedBy {
+          id
+        }
       }
     }`;
 
 export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
       referencedBy (id: $id) {
         id
-        references
-        referencedBy
+        references {
+          id
+        }
+        referencedBy {
+          id
+        }
       }
     }`;
 

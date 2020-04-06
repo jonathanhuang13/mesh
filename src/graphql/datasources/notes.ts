@@ -18,8 +18,8 @@ export class NotesDataSource extends DataSource {
     super();
   }
 
-  async getNotes(): Promise<Note[]> {
-    return database.getNotes();
+  async getNotes(ids?: NoteId[]): Promise<Note[]> {
+    return database.getNotes(ids);
   }
 
   async getNoteById(id: NoteId): Promise<Note | null> {
