@@ -80,28 +80,42 @@ export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cyphe
   return { query, params, returnAlias: alias };
 }
 
-export function getListNotesQuery(): neo4j.Cypher<{}> {
-  const alias = 'n';
-  const query = `MATCH (${alias}: Note) 
-    OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
-    OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
-    RETURN ${alias}, COLLECT(DISTINCT r.id) AS references, COLLECT(DISTINCT b.id) AS referencedBy`;
+interface ListNotesCypher {
+  ids?: NoteId[];
+}
 
-  return { query, params: {}, returnAlias: alias };
+export function getListNotesQuery(params: ListNotesCypher): neo4j.Cypher<ListNotesCypher> {
+  const alias = 'n';
+
+  const matchQuery = params.ids
+    ? `MATCH (${alias}: Note) WHERE ${alias}.id IN $ids`
+    : `MATCH (${alias}: Note)`;
+
+  const query = `${matchQuery}
+    WITH ${alias}
+    OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+    WITH ${alias}, COLLECT(DISTINCT r.id) AS references
+    OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
+    RETURN ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy`;
+
+  return { query, params, returnAlias: alias };
 }
 
 interface GetNoteByIdCypher {
-  id: string;
+  id: NoteId;
 }
 
 export function getNoteByIdQuery(id: NoteId): neo4j.Cypher<GetNoteByIdCypher> {
   const params = { id };
 
   const alias = 'n';
-  const query = `MATCH (${alias}: Note {id: $id})
-  OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
-  OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
-  RETURN ${alias}, COLLECT(DISTINCT r.id) AS references, COLLECT(DISTINCT b.id) AS referencedBy`;
+  const query = `MATCH (${alias}: Note)
+    WHERE ${alias}.id = $id
+    WITH n
+    OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
+    WITH n, COLLECT(DISTINCT r.id) AS references
+    OPTIONAL MATCH (${alias})<-[:REFERENCES]-(b:Note)
+    RETURN ${alias}, references, COLLECT(DISTINCT b.id) AS referencedBy`;
 
   return { query, params, returnAlias: alias };
 }
