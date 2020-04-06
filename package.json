@@ -21,6 +21,8 @@
     "dev": "tsc-watch --onSuccess \"node lib/src/index.js\"",
     "build": "npm run transpile && npm run prettier && npm run lint",
     "db": "cypher-shell -u neo4j -p mesh",
+    "db:seed:up": "cat migrations/seed-up.cypher | cypher-shell -u neo4j -p mesh",
+    "db:seed:down": "cat migrations/seed-down.cypher | cypher-shell -u neo4j -p mesh",
     "db:migrate:up": "cat migrations/init-up.cypher | cypher-shell -u neo4j -p mesh",
     "db:migrate:down": "cat migrations/init-down.cypher | cypher-shell -u neo4j -p mesh",
     "test": "jest"
