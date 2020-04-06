@@ -71,8 +71,8 @@ export async function updateNote(
   return toNote(record, cypher.returnAlias);
 }
 
-export async function getNotes(connection: Neo4jInstance): Promise<Note[]> {
-  const cypher = cyphers.getListNotesQuery();
+export async function getNotes(connection: Neo4jInstance, ids?: NoteId[]): Promise<Note[]> {
+  const cypher = cyphers.getListNotesQuery({ ids });
 
   const result = await connection.write(cypher);
   const notes = result.records.map(r => {

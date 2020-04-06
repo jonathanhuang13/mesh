@@ -82,7 +82,7 @@ describe('Get notes', () => {
     expect(response.status).toEqual(200);
     expect(response.body.data.note).toBeTruthy();
     expect(response.body.data.note.referencedBy).toHaveLength(1);
-    expect(response.body.data.note.referencedBy).toContain(initialIds[2]);
+    expect(response.body.data.note.referencedBy[0]).toMatchObject({ id: initialIds[2] });
   });
 
   it('should not throw if no note exists', async () => {
@@ -147,7 +147,7 @@ describe('Create note', () => {
     const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
     expect(response2.status).toEqual(200);
     expect(response2.body.data.note).toBeTruthy();
-    expect(response2.body.data.note.referencedBy).toContain(id);
+    expect(response2.body.data.note.referencedBy).toContainEqual({ id });
   });
 });
 
@@ -164,7 +164,7 @@ describe('Update note', () => {
     expect(response.body.data.editNote).toBeTruthy();
     expect(response.body.data.editNote.title).toBe('New');
     expect(response.body.data.editNote.references).toHaveLength(1);
-    expect(response.body.data.editNote.references[0]).toBe(initialIds[2]);
+    expect(response.body.data.editNote.references[0]).toMatchObject({ id: initialIds[2] });
 
     const var2 = {
       id: initialIds[0],
@@ -181,6 +181,6 @@ describe('Update note', () => {
     expect(response3.status).toEqual(200);
     expect(response3.body.data.note).toBeTruthy();
     expect(response3.body.data.note.referencedBy).toHaveLength(1);
-    expect(response3.body.data.note.referencedBy).toContain(var1.id);
+    expect(response3.body.data.note.referencedBy[0]).toMatchObject({ id: var1.id });
   });
 });

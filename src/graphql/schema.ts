@@ -26,8 +26,8 @@ const typeDefs = gql`
     title: String!
 
     content: String!
-    references: [String!]!
-    referencedBy: [String!]!
+    references: [Note!]!
+    referencedBy: [Note!]!
   }
 
   type Tag {
