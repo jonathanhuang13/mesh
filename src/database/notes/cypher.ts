@@ -2,15 +2,18 @@ import * as neo4j from '@src/database/neo4j';
 import { v4 as uuidv4 } from 'uuid';
 
 import { NoteId, CreateNoteParams, UpdateNoteParams } from '@src/database/notes';
+import { TagId } from '@src/database/tags';
 
 interface CreateNoteCypher {
-  id: string;
+  id: NoteId;
   content: string;
   references: NoteId[];
+  tags: TagId[];
   createdAt: string;
   updatedAt: string;
 }
 
+// Note: All tags and references must be created before creating a note
 export function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNoteCypher> {
   const id = uuidv4();
 
@@ -35,11 +38,11 @@ export function getCreateNoteQuery(p: CreateNoteParams): neo4j.Cypher<CreateNote
 }
 
 type UpdateNoteCypher = UpdateNoteParams & {
-  id: string;
+  id: NoteId;
   updatedAt: string;
 };
 
-export function getUpdateNoteQuery(id: string, p: UpdateNoteParams): neo4j.Cypher<UpdateNoteCypher> {
+export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cypher<UpdateNoteCypher> {
   const alias = 'n';
   const params: UpdateNoteCypher = {
     ...p,
@@ -63,7 +66,7 @@ export function getUpdateNoteQuery(id: string, p: UpdateNoteParams): neo4j.Cyphe
   }
 
   const query = `MATCH (${alias}:Note {id: $id})
-    SET ${alias}.updatedAt = $updatedAt
+    SET ${alias}.updatedAt = datetime($updatedAt)
     ${titleQuery}
     ${contentQuery}
 
@@ -91,7 +94,9 @@ interface GetNoteByIdCypher {
   id: string;
 }
 
-export function getNoteByIdQuery(params: GetNoteByIdCypher): neo4j.Cypher<GetNoteByIdCypher> {
+export function getNoteByIdQuery(id: NoteId): neo4j.Cypher<GetNoteByIdCypher> {
+  const params = { id };
+
   const alias = 'n';
   const query = `MATCH (${alias}: Note {id: $id})
   OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)
@@ -133,7 +138,9 @@ interface DeleteNoteByIdCypher {
   id: string;
 }
 
-export function getDeleteNoteByIdQuery(params: DeleteNoteByIdCypher): neo4j.Cypher<DeleteNoteByIdCypher> {
+export function getDeleteNoteByIdQuery(id: NoteId): neo4j.Cypher<DeleteNoteByIdCypher> {
+  const params = { id };
+
   const alias = 'n';
   const query = `MATCH (${alias}: Note {id: $id}) 
     DETACH DELETE ${alias}`;

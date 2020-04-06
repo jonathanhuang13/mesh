@@ -1,38 +1,12 @@
-import request from 'supertest';
 import Bluebird from 'bluebird';
-import express from 'express';
 
-import { createApp } from '@src/app';
+import { Note } from '@src/database/notes';
+import database from '@src/database';
 import * as fixtures from '@src/__fixtures__/notes';
-import { getDataSources } from '@src/graphql/datasources';
-import { Note } from '@src/database';
-
-let app: express.Express | undefined;
-
-async function getApp(): Promise<express.Express> {
-  if (app) return app;
-
-  app = await createApp();
-  return app;
-}
-
-async function sendRequest(query: string, variables?: { [k: string]: string | string[] }): Promise<any> {
-  const app = await getApp();
-  const response = await request(app)
-    .post('/graphql')
-    .send({
-      query,
-      variables,
-    });
-
-  return response;
-}
+import { sendRequest } from '@src/__fixtures__/utils';
 
 afterAll(async () => {
-  const dataSources = getDataSources();
-  await dataSources.notes.close();
-
-  app = undefined;
+  await database.close();
 });
 
 let numPrevious = 0;
@@ -47,6 +21,7 @@ beforeEach(async () => {
     title: 'First',
     content: '#first',
     references: [],
+    tags: [],
   };
 
   const response = await sendRequest(fixtures.CREATE_QUERY, var1);
@@ -58,6 +33,7 @@ beforeEach(async () => {
     title: 'Second',
     content: '#second',
     references: [id],
+    tags: [],
   };
 
   const response2 = await sendRequest(fixtures.CREATE_QUERY, var2);
@@ -69,6 +45,7 @@ beforeEach(async () => {
     title: 'Third',
     content: '#third',
     references: [id, id2],
+    tags: [],
   };
 
   const response3 = await sendRequest(fixtures.CREATE_QUERY, var3);
@@ -151,6 +128,7 @@ describe('Create note', () => {
       title: 'Fourth',
       content: '#fourth',
       references: [initialIds[2]],
+      tags: [],
     };
 
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);
