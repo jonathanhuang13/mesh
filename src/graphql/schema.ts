@@ -12,8 +12,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createNote(title: String!, content: String!, references: [String!]!): Note!
-    editNote(id: String!, title: String, content: String, references: [String!]): Note
+    createNote(title: String!, content: String!, references: [String!]!, tags: [String!]!): Note!
+    editNote(id: String!, title: String, content: String, references: [String!], tags: [String!]): Note
     deleteNote(id: String!): Note
 
     createTag(name: String!): Tag!
@@ -28,6 +28,7 @@ const typeDefs = gql`
     content: String!
     references: [Note!]!
     referencedBy: [Note!]!
+    tags: [String!]!
   }
 
   type Tag {

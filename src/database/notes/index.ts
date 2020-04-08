@@ -52,7 +52,7 @@ export async function createNote(connection: Neo4jInstance, params: CreateNotePa
 
   const result = await connection.write(cypher);
   const record = result.records[0]?.toObject();
-  if (!record) throw new Error(`Could not get record ${result}`);
+  if (!record) throw new Error(`Failed on createNote query. Could not get record ${JSON.stringify(result)}`);
 
   return toNote(record, cypher.returnAlias);
 }
@@ -71,6 +71,7 @@ export async function updateNote(
 
   const result = await connection.write(cypher);
   const record = result.records[0]?.toObject();
+  if (!record) throw new Error(`Failed on updateNote query. Could not get record ${JSON.stringify(result)}`);
 
   return toNote(record, cypher.returnAlias);
 }

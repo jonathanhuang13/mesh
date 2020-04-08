@@ -1,5 +1,7 @@
-export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!) {
-      createNote (title: $title, content: $content, references: $references) {
+import { CreateNoteParams } from '@src/database/notes';
+
+export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!, $tags: [String!]!) {
+      createNote (title: $title, content: $content, references: $references, tags: $tags) {
         id
         references {
           id
@@ -7,16 +9,18 @@ export const CREATE_QUERY = `mutation createNote($title: String!, $content: Stri
         referencedBy {
           id
         }
+        tags
       }
     }`;
 
-export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $content: String, $references: [String!]) {
-      editNote (id: $id, title: $title, content: $content, references: $references) {
+export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $content: String, $references: [String!], $tags: [String!]) {
+      editNote (id: $id, title: $title, content: $content, references: $references, tags: $tags) {
         id
         title
         references {
           id
         }
+        tags
       }
     }`;
 
@@ -36,6 +40,7 @@ export const LIST_QUERY = `query getNotes {
         referencedBy {
           id
         }
+        tags
       }
     }
     `;
@@ -49,6 +54,7 @@ export const GET_BY_ID_QUERY = `query getNote($id: String!) {
         referencedBy {
           id
         }
+        tags
       }
     }`;
 
@@ -61,6 +67,7 @@ export const GET_REFERENCES = `query getReferences($id: String!) {
         referencedBy {
           id
         }
+        tags
       }
     }`;
 
@@ -73,8 +80,30 @@ export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
         referencedBy {
           id
         }
+        tags
       }
     }`;
+
+export const CREATE_NOTES_PARAMS: CreateNoteParams[] = [
+  {
+    title: 'First',
+    content: '#first',
+    references: [],
+    tags: [],
+  },
+  {
+    title: 'Second',
+    content: '#second',
+    references: [],
+    tags: [],
+  },
+  {
+    title: 'Third',
+    content: '#third',
+    references: [],
+    tags: [],
+  },
+];
 
 /*
 export const tags: Tag[] = [

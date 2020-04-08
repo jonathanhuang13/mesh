@@ -58,10 +58,10 @@ export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cyphe
   const titleQuery = params.title ? `SET ${alias}.title = $title` : ``;
   const contentQuery = params.content ? `SET ${alias}.content = $content` : ``;
 
-  let referencesQuery = '';
+  let referencesQuery = `OPTIONAL MATCH (${alias})-[:REFERENCES]->(r:Note)`;
   if (params.references) {
-    referencesQuery = `WITH ${alias}
-      MATCH (${alias})-[l:REFERENCES]->(:Note)
+    referencesQuery = `
+      OPTIONAL MATCH (${alias})-[l:REFERENCES]->(:Note)
       DELETE l
       
       WITH ${alias}
@@ -70,10 +70,10 @@ export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cyphe
       `;
   }
 
-  let tagsQuery = '';
+  let tagsQuery = `OPTIONAL MATCH (${alias})-[:IS_TAGGED_WITH]->(t:Tag)`;
   if (params.tags) {
-    tagsQuery = `WITH ${alias}, COLLECT(DISTINCT r.id) AS references
-      MATCH (${alias})-[lt:IS_TAGGED_WITH]->(:Tag)
+    tagsQuery = `
+      OPTIONAL MATCH (${alias})-[lt:IS_TAGGED_WITH]->(:Tag)
       DELETE lt
       
       WITH ${alias}, references
@@ -83,11 +83,15 @@ export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cyphe
   }
 
   const query = `MATCH (${alias}:Note {id: $id})
+    WITH ${alias}
     SET ${alias}.updatedAt = datetime($updatedAt)
     ${titleQuery}
     ${contentQuery}
 
+    WITH ${alias}
     ${referencesQuery}
+
+    WITH ${alias}, COLLECT(DISTINCT r.id) AS references
     ${tagsQuery}
 
     WITH ${alias}, references, COLLECT(DISTINCT t.id) AS tags
