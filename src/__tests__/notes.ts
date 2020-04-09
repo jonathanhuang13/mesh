@@ -32,7 +32,6 @@ afterEach(async () => {
 describe('Get notes', () => {
   it('should get notes', async () => {
     const response = await sendRequest(fixtures.LIST_QUERY);
-    expect(response.status).toEqual(200);
     expect(response.body.data).toBeTruthy();
     expect(response.body.data.notes).toHaveLength(numPrevious + 3);
     expect(response.body.data.notes[0].referencedBy).toBeTruthy();
@@ -44,7 +43,6 @@ describe('Get notes', () => {
     };
 
     const response = await sendRequest(fixtures.GET_BY_ID_QUERY, variable);
-    expect(response.status).toEqual(200);
     expect(response.body.data.note).toBeTruthy();
     expect(response.body.data.note.referencedBy).toHaveLength(1);
     expect(response.body.data.note.referencedBy[0]).toMatchObject({ id: initial.noteIds[2] });
@@ -56,7 +54,6 @@ describe('Get notes', () => {
     };
 
     const response = await sendRequest(fixtures.GET_BY_ID_QUERY, variables);
-    expect(response.status).toEqual(200);
     expect(response.body.data.note).toBeNull();
   });
 
@@ -66,7 +63,6 @@ describe('Get notes', () => {
     };
 
     const response = await sendRequest(fixtures.GET_REFERENCES, variable);
-    expect(response.status).toEqual(200);
     expect(response.body.data.references).toHaveLength(1);
     expect(response.body.data.references[0].references).toHaveLength(0);
     expect(response.body.data.references[0].referencedBy).toHaveLength(2);
@@ -88,7 +84,23 @@ describe('Get notes', () => {
 });
 
 describe('Create note', () => {
-  it('should create note and update references', async () => {
+  it('should create bare note with no references and no tags', async () => {
+    const var1 = {
+      title: 'Fourth',
+      content: '#fourth',
+      references: [],
+      tags: [],
+    };
+    const response = await sendRequest(fixtures.CREATE_QUERY, var1);
+    const { id } = response.body.data.createNote;
+    expect(response.body.data.createNote).toBeTruthy();
+    expect(response.body.data.createNote.references).toHaveLength(0);
+    expect(response.body.data.createNote.referencedBy).toHaveLength(0);
+    expect(response.body.data.createNote.tags).toHaveLength(0);
+    initial.noteIds.push(id);
+  });
+
+  it('should create note with references', async () => {
     const var1 = {
       title: 'Fourth',
       content: '#fourth',
@@ -97,24 +109,96 @@ describe('Create note', () => {
     };
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);
     const { id } = response.body.data.createNote;
-    expect(response.status).toEqual(200);
     expect(response.body.data.createNote).toBeTruthy();
     expect(response.body.data.createNote.references).toHaveLength(1);
     expect(response.body.data.createNote.referencedBy).toHaveLength(0);
+    expect(response.body.data.createNote.tags).toHaveLength(0);
     initial.noteIds.push(id);
 
     const var2 = {
       id: initial.noteIds[2],
     };
     const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
-    expect(response2.status).toEqual(200);
+    expect(response2.body.data.note).toBeTruthy();
+    expect(response2.body.data.note.referencedBy).toContainEqual({ id });
+  });
+
+  it('should create note with tags', async () => {
+    const var1 = {
+      title: 'Fourth',
+      content: '#fourth',
+      references: [],
+      tags: [initial.tagIds[0]],
+    };
+    const response = await sendRequest(fixtures.CREATE_QUERY, var1);
+    const { id } = response.body.data.createNote;
+    expect(response.body.data.createNote).toBeTruthy();
+    expect(response.body.data.createNote.references).toHaveLength(0);
+    expect(response.body.data.createNote.referencedBy).toHaveLength(0);
+    expect(response.body.data.createNote.tags).toHaveLength(1);
+    initial.noteIds.push(id);
+  });
+
+  it('should create note with references and tags', async () => {
+    const var1 = {
+      title: 'Fourth',
+      content: '#fourth',
+      references: [initial.noteIds[1], initial.noteIds[2]],
+      tags: [initial.tagIds[0]],
+    };
+    const response = await sendRequest(fixtures.CREATE_QUERY, var1);
+    const { id } = response.body.data.createNote;
+    expect(response.body.data.createNote).toBeTruthy();
+    expect(response.body.data.createNote.references).toHaveLength(2);
+    expect(response.body.data.createNote.referencedBy).toHaveLength(0);
+    expect(response.body.data.createNote.tags).toHaveLength(1);
+    initial.noteIds.push(id);
+
+    const var2 = {
+      id: initial.noteIds[2],
+    };
+    const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
     expect(response2.body.data.note).toBeTruthy();
     expect(response2.body.data.note.referencedBy).toContainEqual({ id });
   });
 });
 
 describe('Update note', () => {
-  it('should update note and references', async () => {
+  it('should update content of notes and not references or tags', async () => {
+    const var1 = {
+      id: initial.noteIds[1],
+      title: 'New',
+      content: '#new',
+    };
+    const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
+    expect(response.body.data.editNote).toBeTruthy();
+    expect(response.body.data.editNote.title).toBe('New');
+    expect(response.body.data.editNote.references).toHaveLength(1);
+    expect(response.body.data.editNote.references[0]).toMatchObject({ id: initial.noteIds[0] });
+    expect(response.body.data.editNote.tags).toHaveLength(1);
+  });
+
+  it('should remove all references', async () => {
+    const var1 = {
+      id: initial.noteIds[1],
+      title: 'New',
+      content: '#new',
+      references: [],
+    };
+    const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
+    expect(response.body.data.editNote).toBeTruthy();
+    expect(response.body.data.editNote.title).toBe('New');
+    expect(response.body.data.editNote.references).toHaveLength(0);
+
+    const var2 = {
+      id: initial.noteIds[0],
+    };
+    const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
+    expect(response2.body.data.note).toBeTruthy();
+    expect(response2.body.data.note.referencedBy).toHaveLength(1);
+  });
+
+  it('should remove some references and add other references', async () => {
     const var1 = {
       id: initial.noteIds[1],
       title: 'New',
@@ -122,17 +206,15 @@ describe('Update note', () => {
       references: [initial.noteIds[2]],
     };
     const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
-    expect(response.status).toEqual(200);
     expect(response.body.data.editNote).toBeTruthy();
     expect(response.body.data.editNote.title).toBe('New');
     expect(response.body.data.editNote.references).toHaveLength(1);
-    expect(response.body.data.editNote.references[0]).toMatchObject({ id: initial.noteIds[2] });
+    expect(response.body.data.editNote.references[0]).toMatchObject({ id: var1.references[0] });
 
     const var2 = {
       id: initial.noteIds[0],
     };
     const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
-    expect(response2.status).toEqual(200);
     expect(response2.body.data.note).toBeTruthy();
     expect(response2.body.data.note.referencedBy).toHaveLength(1);
 
@@ -140,9 +222,35 @@ describe('Update note', () => {
       id: initial.noteIds[2],
     };
     const response3 = await sendRequest(fixtures.GET_BY_ID_QUERY, var3);
-    expect(response3.status).toEqual(200);
     expect(response3.body.data.note).toBeTruthy();
     expect(response3.body.data.note.referencedBy).toHaveLength(1);
     expect(response3.body.data.note.referencedBy[0]).toMatchObject({ id: var1.id });
+  });
+
+  it('should remove all tags', async () => {
+    const var1 = {
+      id: initial.noteIds[2],
+      title: 'New',
+      content: '#new',
+      tags: [],
+    };
+    const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
+    expect(response.body.data.editNote).toBeTruthy();
+    expect(response.body.data.editNote.title).toBe('New');
+    expect(response.body.data.editNote.tags).toHaveLength(0);
+  });
+
+  it('should remove some tags and add others', async () => {
+    const var1 = {
+      id: initial.noteIds[1],
+      title: 'New',
+      content: '#new',
+      tags: [initial.tagIds[1]],
+    };
+    const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
+    expect(response.body.data.editNote).toBeTruthy();
+    expect(response.body.data.editNote.title).toBe('New');
+    expect(response.body.data.editNote.tags).toHaveLength(1);
+    expect(response.body.data.editNote.tags[0]).toMatchObject({ id: var1.tags[0] });
   });
 });

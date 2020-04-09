@@ -56,8 +56,8 @@ export async function updateTag(connection: Neo4jInstance, id: TagId, params: Up
   return toTag(record, cypher.returnAlias);
 }
 
-export async function getTags(connection: Neo4jInstance): Promise<Tag[]> {
-  const cypher = cyphers.getListTagsQuery();
+export async function getTags(connection: Neo4jInstance, ids?: TagId[]): Promise<Tag[]> {
+  const cypher = cyphers.getListTagsQuery({ ids });
 
   const result = await connection.write(cypher);
   const tags = result.records.map(r => {

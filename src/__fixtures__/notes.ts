@@ -9,7 +9,9 @@ export const CREATE_QUERY = `mutation createNote($title: String!, $content: Stri
         referencedBy {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }`;
 
@@ -20,7 +22,9 @@ export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $c
         references {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }`;
 
@@ -40,7 +44,9 @@ export const LIST_QUERY = `query getNotes {
         referencedBy {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }
     `;
@@ -54,7 +60,9 @@ export const GET_BY_ID_QUERY = `query getNote($id: String!) {
         referencedBy {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }`;
 
@@ -67,7 +75,9 @@ export const GET_REFERENCES = `query getReferences($id: String!) {
         referencedBy {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }`;
 
@@ -80,7 +90,9 @@ export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
         referencedBy {
           id
         }
-        tags
+        tags {
+          id
+        }
       }
     }`;
 

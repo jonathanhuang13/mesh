@@ -58,6 +58,11 @@ const resolvers: IResolvers | Array<IResolvers> = {
       const noteIds = (parent as Note).referencedBy;
       return dataSources.notes.getNotes(noteIds);
     },
+
+    tags: (parent, _args, { dataSources }) => {
+      const tagIds = (parent as Note).tags;
+      return dataSources.tags.getTags(tagIds);
+    },
   },
 
   Tag: {

@@ -55,14 +55,21 @@ export function getUpdateTagQuery(id: TagId, p: UpdateTagParams): neo4j.Cypher<U
   return { query, params, returnAlias: alias };
 }
 
-export function getListTagsQuery(): neo4j.Cypher<{}> {
+export interface ListTagsCypher {
+  ids?: TagId[];
+}
+
+export function getListTagsQuery(params: ListTagsCypher): neo4j.Cypher<ListTagsCypher> {
   const alias = 't';
-  const query = `MATCH (${alias}: Tag) 
+
+  const matchQuery = params.ids ? `MATCH (${alias}: Tag) WHERE ${alias}.id IN $ids` : `MATCH (${alias}: Tag)`;
+
+  const query = `${matchQuery}
     WITH ${alias}
     OPTIONAL MATCH (n:Note)-[:IS_TAGGED_WITH]-(${alias})
     RETURN ${alias}, COLLECT(DISTINCT n.id) AS notes`;
 
-  return { query, params: {}, returnAlias: alias };
+  return { query, params, returnAlias: alias };
 }
 
 interface GetTagByIdCypher {
