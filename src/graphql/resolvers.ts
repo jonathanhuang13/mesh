@@ -5,8 +5,12 @@ import { Tag } from '@src/database/tags';
 
 const resolvers: IResolvers | Array<IResolvers> = {
   Query: {
-    notes: async (_parent, _args, { dataSources }) => {
-      return dataSources.notes.getNotes();
+    notes: async (_parent, args, { dataSources }) => {
+      const params = {
+        ids: args.ids,
+        tagIds: args.tagIds,
+      };
+      return dataSources.notes.getNotes(params);
     },
     note: async (_parent, args, { dataSources }) => {
       return dataSources.notes.getNoteById(args.id);
@@ -51,12 +55,14 @@ const resolvers: IResolvers | Array<IResolvers> = {
   Note: {
     references: (parent, _args, { dataSources }) => {
       const noteIds = (parent as Note).references;
-      return dataSources.notes.getNotes(noteIds);
+      const params = { ids: noteIds };
+      return dataSources.notes.getNotes(params);
     },
 
     referencedBy: (parent, _args, { dataSources }) => {
       const noteIds = (parent as Note).referencedBy;
-      return dataSources.notes.getNotes(noteIds);
+      const params = { ids: noteIds };
+      return dataSources.notes.getNotes(params);
     },
 
     tags: (parent, _args, { dataSources }) => {
@@ -68,7 +74,8 @@ const resolvers: IResolvers | Array<IResolvers> = {
   Tag: {
     notes: (parent, _args, { dataSources }) => {
       const noteIds = (parent as Tag).notes;
-      return dataSources.notes.getNotes(noteIds);
+      const params = { ids: noteIds };
+      return dataSources.notes.getNotes(params);
     },
   },
 };

@@ -81,6 +81,44 @@ describe('Get notes', () => {
     expect(note1.references).toHaveLength(1);
     expect(note1.referencedBy).toHaveLength(1);
   });
+
+  it('should get notes from specific list of IDs', async () => {
+    const variable = {
+      ids: [initial.noteIds[0], initial.noteIds[1]],
+    };
+
+    const response = await sendRequest(fixtures.LIST_QUERY, variable);
+    expect(response.body.data.notes).toHaveLength(variable.ids.length);
+  });
+
+  it('should filter by tags', async () => {
+    const variable = {
+      tagIds: [initial.tagIds[0]],
+    };
+
+    const response = await sendRequest(fixtures.LIST_QUERY, variable);
+    expect(response.body.data.notes).toHaveLength(2);
+  });
+
+  it('should filter by list of notes and tags where at least one matching note exists', async () => {
+    const variable = {
+      ids: [initial.noteIds[0], initial.noteIds[2]],
+      tagIds: [initial.tagIds[1]],
+    };
+
+    const response = await sendRequest(fixtures.LIST_QUERY, variable);
+    expect(response.body.data.notes).toHaveLength(1);
+  });
+
+  it('should filter by list of notes and tags where no note matches query', async () => {
+    const variable = {
+      ids: [initial.noteIds[0], initial.noteIds[1]],
+      tagIds: [initial.tagIds[1]],
+    };
+
+    const response = await sendRequest(fixtures.LIST_QUERY, variable);
+    expect(response.body.data.notes).toHaveLength(0);
+  });
 });
 
 describe('Create note', () => {
