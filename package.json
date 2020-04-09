@@ -25,7 +25,7 @@
     "db:seed:down": "cat migrations/seed-down.cypher | cypher-shell -u neo4j -p mesh",
     "db:migrate:up": "cat migrations/init-up.cypher | cypher-shell -u neo4j -p mesh",
     "db:migrate:down": "cat migrations/init-down.cypher | cypher-shell -u neo4j -p mesh",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "apollo-datasource": "^0.7.0",

@@ -1,8 +1,7 @@
-import { Note } from '@src/database/notes';
-import { Tag } from '@src/database/tags';
+import { CreateNoteParams } from '@src/database/notes';
 
-export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!) {
-      createNote (title: $title, content: $content, references: $references) {
+export const CREATE_QUERY = `mutation createNote($title: String!, $content: String!, $references: [String!]!, $tags: [String!]!) {
+      createNote (title: $title, content: $content, references: $references, tags: $tags) {
         id
         references {
           id
@@ -10,14 +9,20 @@ export const CREATE_QUERY = `mutation createNote($title: String!, $content: Stri
         referencedBy {
           id
         }
+        tags {
+          id
+        }
       }
     }`;
 
-export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $content: String, $references: [String!]) {
-      editNote (id: $id, title: $title, content: $content, references: $references) {
+export const UPDATE_QUERY = `mutation editNote ($id: String!, $title: String, $content: String, $references: [String!], $tags: [String!]) {
+      editNote (id: $id, title: $title, content: $content, references: $references, tags: $tags) {
         id
         title
         references {
+          id
+        }
+        tags {
           id
         }
       }
@@ -39,6 +44,9 @@ export const LIST_QUERY = `query getNotes {
         referencedBy {
           id
         }
+        tags {
+          id
+        }
       }
     }
     `;
@@ -50,6 +58,9 @@ export const GET_BY_ID_QUERY = `query getNote($id: String!) {
           id
         }
         referencedBy {
+          id
+        }
+        tags {
           id
         }
       }
@@ -64,6 +75,9 @@ export const GET_REFERENCES = `query getReferences($id: String!) {
         referencedBy {
           id
         }
+        tags {
+          id
+        }
       }
     }`;
 
@@ -76,53 +90,29 @@ export const GET_REFERENCED_BY = `query getReferencedBy($id: String!) {
         referencedBy {
           id
         }
+        tags {
+          id
+        }
       }
     }`;
 
-export const tags: Tag[] = [
+export const CREATE_NOTES_PARAMS: CreateNoteParams[] = [
   {
-    id: '1',
-    name: 'tag1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: '2',
-    name: 'tag2',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
-export const notes: Note[] = [
-  {
-    id: '1',
     title: 'First',
-    content: '#content',
-    references: ['2'],
-    referencedBy: ['2'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    tags: [tags[0]],
-  },
-  {
-    id: '2',
-    title: 'Second',
-    content: '#content2',
-    references: ['1', '3'],
-    referencedBy: ['1'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    tags: [tags[0], tags[1]],
-  },
-  {
-    id: '3',
-    title: 'Third',
-    content: '#content3',
+    content: '#first',
     references: [],
-    referencedBy: ['2'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    tags: [],
+  },
+  {
+    title: 'Second',
+    content: '#second',
+    references: [],
+    tags: [],
+  },
+  {
+    title: 'Third',
+    content: '#third',
+    references: [],
     tags: [],
   },
 ];

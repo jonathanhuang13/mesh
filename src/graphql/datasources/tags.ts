@@ -14,8 +14,8 @@ export class TagsDataSource extends DataSource {
     super();
   }
 
-  async getTags(): Promise<Tag[]> {
-    return database.getTags();
+  async getTags(ids?: TagId[]): Promise<Tag[]> {
+    return database.getTags(ids);
   }
 
   async getTagById(id: TagId): Promise<Tag | null> {

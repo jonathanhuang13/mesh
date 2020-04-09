@@ -1,51 +1,52 @@
-import Bluebird from 'bluebird';
-
 import database from '@src/database';
 import * as fixtures from '@src/__fixtures__/tags';
-import { sendRequest } from '@src/__fixtures__/utils';
+import { sendRequest, initDatabase, cleanDatabase, InitData } from '@src/__fixtures__/utils';
+import { Tag } from '@src/database/tags';
 
 afterAll(async () => {
   await database.close();
 });
 
 let numPrevious = 0;
-let initialIds: string[] = [];
+let initial: InitData = {
+  noteIds: [],
+  tagIds: [],
+};
 
 beforeEach(async () => {
   const resp = await sendRequest(fixtures.LIST_QUERY);
   numPrevious = resp.body.data.tags.length;
 
-  const var1 = { name: 'First' };
-  const response = await sendRequest(fixtures.CREATE_QUERY, var1);
-  const { id } = response.body.data.createTag;
-  initialIds.push(id);
+  initial = await initDatabase();
 });
 
 afterEach(async () => {
-  await Bluebird.map(initialIds, async id => {
-    const response = await sendRequest(fixtures.DELETE_QUERY, { id });
-
-    expect(response.status).toEqual(200);
-  });
-
-  initialIds = [];
+  await cleanDatabase(initial);
+  initial = {
+    noteIds: [],
+    tagIds: [],
+  };
 });
 
 describe('Get tags', () => {
   it('should get tags', async () => {
     const response = await sendRequest(fixtures.LIST_QUERY);
     expect(response.body.data).toBeTruthy();
-    expect(response.body.data.tags).toHaveLength(numPrevious + 1);
+    expect(response.body.data.tags).toHaveLength(numPrevious + initial.tagIds.length);
     expect(response.body.data.tags[0].name).toBeTruthy();
+
+    const noteWithTwoTags = response.body.data.tags.filter((t: Tag) => t.id === initial.tagIds[0]);
+    expect(noteWithTwoTags[0].notes).toHaveLength(2);
   });
 
   it('should get one note', async () => {
-    const variable = { id: initialIds[0] };
+    const variable = { id: initial.tagIds[1] };
 
     const response = await sendRequest(fixtures.GET_BY_ID_QUERY, variable);
     expect(response.status).toEqual(200);
     expect(response.body.data.tag).toBeTruthy();
     expect(response.body.data.tag.name).toBeTruthy();
+    expect(response.body.data.tag.notes[0]).toMatchObject({ id: initial.noteIds[2] });
   });
 });
 
@@ -54,6 +55,7 @@ describe('Create tag', () => {
     const var1 = { name: 'Second' };
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);
     expect(response.body.data.createTag).toBeTruthy();
+    initial.tagIds.push(response.body.data.createTag.id);
 
     const var2 = { id: response.body.data.createTag.id };
     const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
@@ -65,7 +67,7 @@ describe('Create tag', () => {
 
 describe('Update tag', () => {
   it('should update tag', async () => {
-    const var1 = { id: initialIds[0], name: 'New' };
+    const var1 = { id: initial.tagIds[0], name: 'New' };
     const response = await sendRequest(fixtures.UPDATE_QUERY, var1);
     expect(response.body.data.editTag).toBeTruthy();
     expect(response.body.data.editTag.name).toBe('New');
@@ -74,12 +76,16 @@ describe('Update tag', () => {
 
 describe('Delete tag', () => {
   it('should delete tag', async () => {
-    const var1 = { id: initialIds[0] };
-    const response = await sendRequest(fixtures.DELETE_QUERY, var1);
-    expect(response.body.data.deleteTag).toBeTruthy();
+    const var1 = { name: 'Second' };
+    const response = await sendRequest(fixtures.CREATE_QUERY, var1);
+    expect(response.body.data.createTag).toBeTruthy();
 
-    const var2 = { id: var1.id };
-    const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
-    expect(response2.body.data.tag).toBeNull();
+    const var2 = { id: response.body.data.createTag.id };
+    const response2 = await sendRequest(fixtures.DELETE_QUERY, var2);
+    expect(response2.body.data.deleteTag).toBeTruthy();
+
+    const var3 = { id: var2.id };
+    const response3 = await sendRequest(fixtures.GET_BY_ID_QUERY, var3);
+    expect(response3.body.data.tag).toBeNull();
   });
 });

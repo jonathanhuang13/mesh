@@ -70,9 +70,9 @@ export class Database {
     return tags.updateTag(connection, id, params);
   }
 
-  async getTags(): Promise<tags.Tag[]> {
+  async getTags(ids?: tags.TagId[]): Promise<tags.Tag[]> {
     const connection = this.getConnection();
-    return tags.getTags(connection);
+    return tags.getTags(connection, ids);
   }
 
   async getTagById(id: tags.TagId): Promise<tags.Tag | null> {
