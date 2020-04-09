@@ -23,7 +23,9 @@ export function getCreateTagQuery(p: CreateTagParams): neo4j.Cypher<CreateTagCyp
 
   const alias = 't';
   const query = `CREATE (${alias}:Tag {id: $id, name: $name, createdAt: datetime($createdAt), updatedAt: datetime($updatedAt)})
-    RETURN ${alias}`;
+    WITH ${alias}
+    OPTIONAL MATCH (n:Note)-[:IS_TAGGED_WITH]-(${alias})
+    RETURN ${alias}, COLLECT(DISTINCT n.id) AS notes`;
 
   return { query, params, returnAlias: alias };
 }
@@ -46,14 +48,19 @@ export function getUpdateTagQuery(id: TagId, p: UpdateTagParams): neo4j.Cypher<U
   const query = `MATCH (${alias}:Tag {id: $id})
     ${nameQuery}
     SET ${alias}.updatedAt = datetime($updatedAt)
-    RETURN ${alias}`;
+    WITH ${alias}
+    OPTIONAL MATCH (n:Note)-[:IS_TAGGED_WITH]-(${alias})
+    RETURN ${alias}, COLLECT(DISTINCT n.id) AS notes`;
 
   return { query, params, returnAlias: alias };
 }
 
 export function getListTagsQuery(): neo4j.Cypher<{}> {
   const alias = 't';
-  const query = `MATCH (${alias}: Tag) RETURN ${alias}`;
+  const query = `MATCH (${alias}: Tag) 
+    WITH ${alias}
+    OPTIONAL MATCH (n:Note)-[:IS_TAGGED_WITH]-(${alias})
+    RETURN ${alias}, COLLECT(DISTINCT n.id) AS notes`;
 
   return { query, params: {}, returnAlias: alias };
 }
@@ -66,7 +73,10 @@ export function getTagByIdQuery(id: TagId): neo4j.Cypher<GetTagByIdCypher> {
   const params = { id };
 
   const alias = 't';
-  const query = `MATCH (${alias}:Tag {id: $id}) RETURN ${alias}`;
+  const query = `MATCH (${alias}:Tag {id: $id}) 
+    WITH ${alias}
+    OPTIONAL MATCH (n:Note)-[:IS_TAGGED_WITH]-(${alias})
+    RETURN ${alias}, COLLECT(DISTINCT n.id) AS notes`;
 
   return { query, params, returnAlias: alias };
 }
