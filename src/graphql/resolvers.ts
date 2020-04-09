@@ -1,5 +1,8 @@
 import { IResolvers } from 'apollo-server-express';
 
+import { Note } from '@src/database/notes';
+import { Tag } from '@src/database/tags';
+
 const resolvers: IResolvers | Array<IResolvers> = {
   Query: {
     notes: async (_parent, _args, { dataSources }) => {
@@ -47,11 +50,20 @@ const resolvers: IResolvers | Array<IResolvers> = {
 
   Note: {
     references: (parent, _args, { dataSources }) => {
-      return dataSources.notes.getNotes(parent.references);
+      const noteIds = (parent as Note).references;
+      return dataSources.notes.getNotes(noteIds);
     },
 
     referencedBy: (parent, _args, { dataSources }) => {
-      return dataSources.notes.getNotes(parent.referencedBy);
+      const noteIds = (parent as Note).referencedBy;
+      return dataSources.notes.getNotes(noteIds);
+    },
+  },
+
+  Tag: {
+    notes: (parent, _args, { dataSources }) => {
+      const noteIds = (parent as Tag).notes;
+      return dataSources.notes.getNotes(noteIds);
     },
   },
 };

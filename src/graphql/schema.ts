@@ -34,7 +34,7 @@ const typeDefs = gql`
   type Tag {
     id: String!
     name: String!
-    notes: [String!]!
+    notes: [Note!]!
   }
 `;
 

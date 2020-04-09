@@ -101,7 +101,7 @@ describe('Create note', () => {
     expect(response.body.data.createNote).toBeTruthy();
     expect(response.body.data.createNote.references).toHaveLength(1);
     expect(response.body.data.createNote.referencedBy).toHaveLength(0);
-    // TODO: Delete created note
+    initial.noteIds.push(id);
 
     const var2 = {
       id: initial.noteIds[2],

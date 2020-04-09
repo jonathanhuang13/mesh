@@ -1,6 +1,7 @@
 import database from '@src/database';
 import * as fixtures from '@src/__fixtures__/tags';
 import { sendRequest, initDatabase, cleanDatabase, InitData } from '@src/__fixtures__/utils';
+import { Tag } from '@src/database/tags';
 
 afterAll(async () => {
   await database.close();
@@ -33,15 +34,19 @@ describe('Get tags', () => {
     expect(response.body.data).toBeTruthy();
     expect(response.body.data.tags).toHaveLength(numPrevious + initial.tagIds.length);
     expect(response.body.data.tags[0].name).toBeTruthy();
+
+    const noteWithTwoTags = response.body.data.tags.filter((t: Tag) => t.id === initial.tagIds[0]);
+    expect(noteWithTwoTags[0].notes).toHaveLength(2);
   });
 
   it('should get one note', async () => {
-    const variable = { id: initial.tagIds[0] };
+    const variable = { id: initial.tagIds[1] };
 
     const response = await sendRequest(fixtures.GET_BY_ID_QUERY, variable);
     expect(response.status).toEqual(200);
     expect(response.body.data.tag).toBeTruthy();
     expect(response.body.data.tag.name).toBeTruthy();
+    expect(response.body.data.tag.notes[0]).toMatchObject({ id: initial.noteIds[2] });
   });
 });
 
@@ -50,7 +55,7 @@ describe('Create tag', () => {
     const var1 = { name: 'Second' };
     const response = await sendRequest(fixtures.CREATE_QUERY, var1);
     expect(response.body.data.createTag).toBeTruthy();
-    // TODO: Delete created tag
+    initial.tagIds.push(response.body.data.createTag.id);
 
     const var2 = { id: response.body.data.createTag.id };
     const response2 = await sendRequest(fixtures.GET_BY_ID_QUERY, var2);
