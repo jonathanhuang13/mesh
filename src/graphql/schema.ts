@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type Query {
-    notes: [Note]!
+    notes(ids: [String!], tagIds: [String!]): [Note]!
     note(id: String!): Note
     references(id: String!): [Note]!
     referencedBy(id: String!): [Note]!

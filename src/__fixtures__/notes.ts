@@ -34,8 +34,8 @@ export const DELETE_QUERY = `mutation deleteNote($id: String!) {
       }
     }`;
 
-export const LIST_QUERY = `query getNotes {
-      notes {
+export const LIST_QUERY = `query getNotes ($ids: [String!], $tagIds: [String!]) {
+      notes (ids: $ids, tagIds: $tagIds){
         id
         title
         references {

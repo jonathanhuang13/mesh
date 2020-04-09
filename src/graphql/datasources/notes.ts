@@ -1,7 +1,7 @@
 import { DataSource } from 'apollo-datasource';
 
 import database from '@src/database';
-import { Note, NoteId } from '@src/database/notes';
+import { Note, NoteId, ListNotesParams } from '@src/database/notes';
 import { TagId } from '@src/database/tags';
 
 export interface CreateNoteParams {
@@ -18,8 +18,8 @@ export class NotesDataSource extends DataSource {
     super();
   }
 
-  async getNotes(ids?: NoteId[]): Promise<Note[]> {
-    return database.getNotes(ids);
+  async getNotes(params: ListNotesParams): Promise<Note[]> {
+    return database.getNotes(params);
   }
 
   async getNoteById(id: NoteId): Promise<Note | null> {

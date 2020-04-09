@@ -35,9 +35,9 @@ export class Database {
     return notes.updateNote(connection, id, params);
   }
 
-  async getNotes(ids?: notes.NoteId[]): Promise<notes.Note[]> {
+  async getNotes(params: notes.ListNotesParams): Promise<notes.Note[]> {
     const connection = this.getConnection();
-    return notes.getNotes(connection, ids);
+    return notes.getNotes(connection, params);
   }
 
   async getNoteById(id: notes.NoteId): Promise<notes.Note | null> {

@@ -1,7 +1,7 @@
 import * as neo4j from '@src/database/neo4j';
 import { v4 as uuidv4 } from 'uuid';
 
-import { NoteId, CreateNoteParams, UpdateNoteParams } from '@src/database/notes';
+import { NoteId, CreateNoteParams, UpdateNoteParams, ListNotesParams } from '@src/database/notes';
 import { TagId } from '@src/database/tags';
 
 interface CreateNoteCypher {
@@ -102,16 +102,25 @@ export function getUpdateNoteQuery(id: NoteId, p: UpdateNoteParams): neo4j.Cyphe
   return { query, params, returnAlias: alias };
 }
 
-interface ListNotesCypher {
-  ids?: NoteId[];
-}
+type ListNotesCypher = ListNotesParams;
 
-export function getListNotesQuery(params: ListNotesCypher): neo4j.Cypher<ListNotesCypher> {
+export function getListNotesQuery(params: ListNotesParams): neo4j.Cypher<ListNotesCypher> {
   const alias = 'n';
 
-  const matchQuery = params.ids
-    ? `MATCH (${alias}: Note) WHERE ${alias}.id IN $ids`
-    : `MATCH (${alias}: Note)`;
+  let matchQuery = `MATCH (${alias}: Note)`;
+  if (params.ids && params.tagIds) {
+    matchQuery = `MATCH (${alias}:Note) WHERE ${alias}.id IN $ids
+      WITH ${alias}
+      MATCH (${alias})-[:IS_TAGGED_WITH]->(t:Tag)
+      WHERE t.id IN $tagIds
+      `;
+  } else if (params.tagIds) {
+    matchQuery = `MATCH (t:Tag) WHERE t.id IN $tagIds
+      WITH t
+      MATCH (${alias}:Note)-[:IS_TAGGED_WITH]->(t)`;
+  } else if (params.ids) {
+    matchQuery = `MATCH (${alias}: Note) WHERE ${alias}.id IN $ids`;
+  }
 
   const query = `${matchQuery}
     WITH ${alias}
