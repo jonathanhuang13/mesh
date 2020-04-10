@@ -1,0 +1,27 @@
+{
+  "name": "mesh",
+  "version": "0.0.0",
+  "description": "Zettelkasten",
+  "scripts": {
+    "precommit:api": "./bin/precommit.sh api",
+    "precommit:ui": "./bin/precommit.sh ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathanhuang13/mesh.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonathanhuang13/mesh/issues"
+  },
+  "homepage": "https://github.com/jonathanhuang13/mesh#readme",
+  "devDependencies": {
+    "husky": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit:api && npm run precommit:ui"
+    }
+  }
+}
