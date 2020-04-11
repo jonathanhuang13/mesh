@@ -13,3 +13,15 @@ node_modules/
 
 config.json
 
+# Electron app
+release
+ui/app/main.prod.js
+ui/app/main.prod.js.map
+uiapp/renderer.prod.js
+ui/app/renderer.prod.js.map
+ui/app/style.css
+ui/app/style.css.map
+dist
+dll
+main.js
+main.js.map
