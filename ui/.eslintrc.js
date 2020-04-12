@@ -1,16 +1,23 @@
 module.exports = {
-  extends: 'erb/typescript',
+  parser: '@typescript-eslint/parser',
+  extends: ['plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
+  parserOptions: {
+    project: 'tsconfig.json',
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  plugins: ['@typescript-eslint'],
   rules: {
-    // A temporary hack related to IDE not resolving correct package.json
-    'import/no-extraneous-dependencies': 'off'
+    '@typescript-eslint/adjacent-overload-signatures': 'error',
+    'no-redeclare': 'error',
+    'no-return-await': 'error',
+    'no-duplicate-case': 'error',
   },
   settings: {
-    'import/resolver': {
-      // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
-      node: {},
-      webpack: {
-        config: require.resolve('./configs/webpack.config.eslint.js')
-      }
-    }
-  }
+    react: {
+      version: 'detect',
+    },
+  },
 };
