@@ -1,6 +1,6 @@
-import chalk from 'chalk';
+const chalk = require('chalk');
 
-export default function CheckNodeEnv(expectedEnv) {
+function CheckNodeEnv(expectedEnv) {
   if (!expectedEnv) {
     throw new Error('"expectedEnv" not set');
   }
@@ -8,9 +8,11 @@ export default function CheckNodeEnv(expectedEnv) {
   if (process.env.NODE_ENV !== expectedEnv) {
     console.log(
       chalk.whiteBright.bgRed.bold(
-        `"process.env.NODE_ENV" must be "${expectedEnv}" to use this webpack config`
-      )
+        `"process.env.NODE_ENV" must be "${expectedEnv}" to use this webpack config`,
+      ),
     );
     process.exit(2);
   }
 }
+
+module.exports.CheckNodeEnv = CheckNodeEnv;
