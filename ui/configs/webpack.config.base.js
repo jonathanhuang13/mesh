@@ -4,11 +4,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const { dependencies } = require('../app/package.json');
 
 module.exports = {
-  externals: [...Object.keys(dependencies || {})],
-
   module: {
     rules: [
       {
