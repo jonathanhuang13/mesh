@@ -4,8 +4,6 @@
     "target": "ES2018",
     "module": "CommonJS",
     "lib": ["dom", "es2018"],
-    "declaration": true,
-    "declarationMap": true,
     "noEmitOnError": true,
     "jsx": "react",
     "strict": true,
