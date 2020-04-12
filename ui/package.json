@@ -1,0 +1,153 @@
+{
+  "name": "mesh",
+  "version": "0.0.0",
+  "description": "Zettelkasten",
+  "scripts": {
+    "build": "rm -rf src/dist/*.js.map src/*.js.map && concurrently \"npm run build-main\" \"npm run build-renderer\"",
+    "build-e2e": "cross-env E2E_BUILD=true npm run build",
+    "build-main": "cross-env NODE_ENV=production webpack --config ./webpack/main.prod.js --colors",
+    "build-renderer": "cross-env NODE_ENV=production webpack --config ./webpack/renderer.prod.js --colors",
+    "dev": "cross-env START_HOT=1 cross-env START_HOT=1 npm run start-renderer-dev",
+    "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
+    "ts": "tsc",
+    "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
+    "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
+    "package": "npm run build && electron-builder build --publish never",
+    "package-all": "npm run build && electron-builder build -mwl",
+    "package-ci": "npm run postinstall && npm run build && electron-builder --publish always",
+    "package-mac": "npm run build && electron-builder build --mac",
+    "package-linux": "npm run build && electron-builder build --linux",
+    "package-win": "npm run build && electron-builder build --win --x64",
+    "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
+    "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production electron ./main.prod.js",
+    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./main.dev.js",
+    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/renderer.dev.js"
+  },
+  "devDependencies": {
+    "@types/history": "^4.7.5",
+    "@types/node": "^13.9.1",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.6",
+    "@types/react-redux": "^7.1.6",
+    "@types/react-router": "^5.1.5",
+    "@types/react-router-dom": "^5.1.3",
+    "@types/redux-logger": "^3.0.7",
+    "@types/webpack": "^4.41.3",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
+    "concurrently": "^5.0.2",
+    "cross-env": "^7.0.0",
+    "cross-spawn": "^7.0.1",
+    "css-loader": "^3.4.2",
+    "electron": "7.1.13",
+    "electron-builder": "^22.3.6",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-rebuild": "^1.10.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "file-loader": "^5.0.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "node-sass": "^4.13.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "prettier": "^1.19.1",
+    "redux-logger": "^3.0.6",
+    "sass-loader": "^8.0.2",
+    "spectron": "^10.0.0",
+    "style-loader": "^1.1.3",
+    "stylelint": "^13.0.0",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-standard": "^19.0.0",
+    "terser-webpack-plugin": "^2.3.2",
+    "ts-loader": "^6.2.2",
+    "typed-css-modules-webpack-plugin": "^0.1.2",
+    "typescript": "^3.8.3",
+    "url-loader": "^3.0.0",
+    "webpack": "^4.41.5",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@hot-loader/react-dom": "^16.13.0",
+    "connected-react-router": "^6.6.1",
+    "devtron": "^1.4.0",
+    "electron-debug": "^3.0.1",
+    "electron-log": "^4.0.6",
+    "electron-updater": "^4.2.0",
+    "history": "^4.10.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-hot-loader": "^4.12.19",
+    "react-redux": "^7.1.3",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "source-map-support": "^0.5.16"
+  },
+  "devEngines": {
+    "node": ">=7.x",
+    "npm": ">=4.x"
+  },
+  "prettier": "./prettier.json",
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard",
+      "stylelint-config-prettier"
+    ]
+  },
+  "build": {
+    "productName": "Mesh",
+    "appId": "org.develar.ElectronReact",
+    "files": [
+      "dist/",
+      "node_modules/",
+      "index.html",
+      "main.prod.js",
+      "main.prod.js.map"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "jonathanhuang13",
+      "repo": "mesh",
+      "private": false
+    }
+  }
+}

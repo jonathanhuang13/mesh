@@ -13,3 +13,9 @@ node_modules/
 
 config.json
 
+# Electron app
+release
+ui/main.prod.js
+ui/main.prod.js.map
+dist
+*.LICENSE*

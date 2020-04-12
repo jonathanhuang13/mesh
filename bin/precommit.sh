@@ -4,7 +4,7 @@ SRC_PATTERN=$1
 if git diff --cached --name-only | grep --quiet "$SRC_PATTERN"
 then
   echo "change detected in $1"
-  cd $1 && npm test
+  cd $1 && npm run build && npm test
   exit $?
 fi
 
