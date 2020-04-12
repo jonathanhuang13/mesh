@@ -9,7 +9,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const merge = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
-const baseConfig = require('./webpack.config.base');
+const baseConfig = require('./base');
 
 if (process.env.NODE_ENV !== 'production') {
   console.error(`"process.env.NODE_ENV" must be "production" to use this webpack config`);

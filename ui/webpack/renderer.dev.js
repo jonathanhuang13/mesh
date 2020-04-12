@@ -11,7 +11,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const { spawn, execSync } = require('child_process');
 const { TypedCssModulesPlugin } = require('typed-css-modules-webpack-plugin');
-const baseConfig = require('./webpack.config.base');
+const baseConfig = require('./base');
 
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
@@ -235,8 +235,8 @@ module.exports = merge.smart(baseConfig, {
           env: process.env,
           stdio: 'inherit',
         })
-          .on('close', code => process.exit(code))
-          .on('error', spawnError => console.error(spawnError));
+          .on('close', (code) => process.exit(code))
+          .on('error', (spawnError) => console.error(spawnError));
       }
     },
   },
