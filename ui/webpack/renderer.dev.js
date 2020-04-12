@@ -6,10 +6,9 @@
  */
 
 const path = require('path');
-const fs = require('fs');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const { spawn, execSync } = require('child_process');
+const { spawn } = require('child_process');
 const { TypedCssModulesPlugin } = require('typed-css-modules-webpack-plugin');
 const baseConfig = require('./base');
 
@@ -235,8 +234,8 @@ module.exports = merge.smart(baseConfig, {
           env: process.env,
           stdio: 'inherit',
         })
-          .on('close', (code) => process.exit(code))
-          .on('error', (spawnError) => console.error(spawnError));
+          .on('close', code => process.exit(code))
+          .on('error', spawnError => console.error(spawnError));
       }
     },
   },
