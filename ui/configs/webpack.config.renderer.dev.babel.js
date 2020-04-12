@@ -13,13 +13,6 @@ const merge = require('webpack-merge');
 const { spawn, execSync } = require('child_process');
 const { TypedCssModulesPlugin } = require('typed-css-modules-webpack-plugin');
 const baseConfig = require('./webpack.config.base');
-const { CheckNodeEnv } = require('../internals/scripts/CheckNodeEnv');
-
-// When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
-// at the dev webpack config is not accidentally run in a production environment
-if (process.env.NODE_ENV === 'production') {
-  CheckNodeEnv('development');
-}
 
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;

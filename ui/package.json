@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Zettelkasten",
   "scripts": {
-    "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
+    "build": "rm -rf app/dist/*.js.map app/*.js.map && concurrently \"npm run build-main\" \"npm run build-renderer\"",
     "build-e2e": "cross-env E2E_BUILD=true npm run build",
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
     "build-renderer": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.babel.js --colors",
@@ -24,7 +24,7 @@
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
-    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron -r ./app/main.dev.js",
+    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
   },
   "build": {

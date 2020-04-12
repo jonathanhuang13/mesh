@@ -8,11 +8,11 @@ const merge = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const baseConfig = require('./webpack.config.base');
-const { CheckNodeEnv } = require('../internals/scripts/CheckNodeEnv');
-const { DeleteSourceMaps } = require('../internals/scripts/DeleteSourceMaps');
 
-CheckNodeEnv('production');
-DeleteSourceMaps();
+if (process.env.NODE_ENV !== 'production') {
+  console.error(`"process.env.NODE_ENV" must be "production" to use this webpack config`);
+  process.exit(1);
+}
 
 module.exports = merge.smart(baseConfig, {
   devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
