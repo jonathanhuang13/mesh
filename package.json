@@ -23,5 +23,6 @@
     "hooks": {
       "pre-commit": "npm run precommit:api && npm run precommit:ui"
     }
-  }
+  },
+  "dependencies": {}
 }
