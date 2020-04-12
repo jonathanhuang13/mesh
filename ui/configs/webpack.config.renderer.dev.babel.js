@@ -8,7 +8,6 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const chalk = require('chalk');
 const merge = require('webpack-merge');
 const { spawn, execSync } = require('child_process');
 const { TypedCssModulesPlugin } = require('typed-css-modules-webpack-plugin');
