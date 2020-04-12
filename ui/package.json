@@ -21,8 +21,8 @@
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run build",
-    "start": "cross-env NODE_ENV=production electron ./src/main.prod.js",
-    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./src/main.dev.js",
+    "start": "cross-env NODE_ENV=production electron ./main.prod.js",
+    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/renderer.dev.js"
   },
   "devDependencies": {

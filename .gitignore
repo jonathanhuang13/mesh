@@ -15,14 +15,7 @@ config.json
 
 # Electron app
 release
-ui/src/main.prod.js
-ui/src/main.prod.js.map
-ui/src/renderer.prod.js
-ui/src/renderer.prod.js.map
-ui/src/style.css
-ui/src/style.css.map
+ui/main.prod.js
+ui/main.prod.js.map
 dist
-dll
-main.js
-main.js.map
 *.LICENSE*
