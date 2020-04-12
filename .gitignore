@@ -15,12 +15,12 @@ config.json
 
 # Electron app
 release
-ui/app/main.prod.js
-ui/app/main.prod.js.map
-uiapp/renderer.prod.js
-ui/app/renderer.prod.js.map
-ui/app/style.css
-ui/app/style.css.map
+ui/src/main.prod.js
+ui/src/main.prod.js.map
+ui/src/renderer.prod.js
+ui/src/renderer.prod.js.map
+ui/src/style.css
+ui/src/style.css.map
 dist
 dll
 main.js

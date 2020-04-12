@@ -17,7 +17,7 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, '..', 'app'),
+    path: path.join(__dirname, '..', 'src'),
     // https://github.com/webpack/webpack/issues/1114
     libraryTarget: 'commonjs2',
   },
@@ -27,7 +27,7 @@ module.exports = {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-    modules: [path.join(__dirname, '..', 'app'), 'node_modules'],
+    modules: [path.join(__dirname, '..', 'src'), 'node_modules'],
   },
 
   plugins: [

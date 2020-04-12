@@ -21,10 +21,10 @@ module.exports = merge.smart(baseConfig, {
 
   mode: 'production',
   target: 'electron-renderer',
-  entry: path.join(__dirname, '..', 'app/index.tsx'),
+  entry: path.join(__dirname, '..', 'src/index.tsx'),
 
   output: {
-    path: path.join(__dirname, '..', 'app/dist'),
+    path: path.join(__dirname, '..', 'src/dist'),
     publicPath: './dist/',
     filename: 'renderer.prod.js',
   },

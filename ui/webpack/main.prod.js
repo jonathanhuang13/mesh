@@ -19,10 +19,10 @@ module.exports = merge.smart(baseConfig, {
 
   mode: 'production',
   target: 'electron-main',
-  entry: './app/main.dev.js',
+  entry: './src/main.dev.js',
   output: {
     path: path.join(__dirname, '..'),
-    filename: './app/main.prod.js',
+    filename: './src/main.prod.js',
   },
 
   optimization: {
