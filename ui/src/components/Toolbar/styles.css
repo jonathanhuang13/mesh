@@ -1,0 +1,10 @@
+.button {
+  background-color: red;
+  height: 80%;
+}
+
+.toolbar {
+  display: inline-block;
+  margin-left: 15px;
+  height: 30px;
+}

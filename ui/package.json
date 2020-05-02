@@ -88,6 +88,9 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "slate": "^0.57.2",
+    "slate-history": "^0.57.2",
+    "slate-react": "^0.57.2",
     "source-map-support": "^0.5.16"
   },
   "devEngines": {
