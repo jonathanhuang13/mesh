@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Editable, withReact, Slate } from 'slate-react';
-import { Editor, createEditor, Node } from 'slate';
+import { createEditor, Node } from 'slate';
 import { withHistory } from 'slate-history';
 
 import Element from './element';
 import Leaf from './leaf';
+import Toolbar from '../Toolbar';
 
 const HOTKEYS: { [k: string]: string } = {
   'mod+b': 'bold',
@@ -20,6 +21,7 @@ export default function EditorPage() {
 
   return (
     <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+      <Toolbar />
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -33,7 +35,7 @@ export default function EditorPage() {
               // const mark = HOTKEYS[hotkey]
               hotkey;
               const mark = 'bold';
-              toggleMark(editor, mark);
+              mark;
             }
           }
         }}
@@ -41,21 +43,6 @@ export default function EditorPage() {
     </Slate>
   );
 }
-
-const toggleMark = (editor: any, format: any) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isMarkActive = (editor: any, format: any) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
 
 const initialValue: Node[] = [
   {
