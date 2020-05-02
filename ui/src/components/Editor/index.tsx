@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate } from 'slate-react';
 import { createEditor, Node } from 'slate';
 import { withHistory } from 'slate-history';
@@ -7,8 +8,10 @@ import Element from './element';
 import Leaf from './leaf';
 import Toolbar from '../Toolbar';
 
-const HOTKEYS: { [k: string]: string } = {
-  'mod+b': 'bold',
+import { toggleMark, Format } from '../../slatejs/mark';
+
+const HOTKEYS: { [k: string]: Format } = {
+  'mod+b': Format.Bold,
 };
 
 // const LIST_TYPES = ['numbered-list', 'bulleted-list'];
@@ -30,12 +33,10 @@ export default function EditorPage() {
         autoFocus
         onKeyDown={event => {
           for (const hotkey in HOTKEYS) {
-            if (event.key === 'b') {
+            if (isHotkey(hotkey, event as any)) {
               event.preventDefault();
-              // const mark = HOTKEYS[hotkey]
-              hotkey;
-              const mark = 'bold';
-              mark;
+              const mark = HOTKEYS[hotkey];
+              toggleMark(editor, mark);
             }
           }
         }}
