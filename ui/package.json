@@ -23,7 +23,8 @@
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production electron ./main.prod.js",
     "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron ./main.dev.js",
-    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/renderer.dev.js"
+    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/renderer.dev.js",
+    "test": "exit 0"
   },
   "devDependencies": {
     "@types/history": "^4.7.5",
