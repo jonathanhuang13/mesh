@@ -16,35 +16,6 @@ const HOTKEYS: { [k: string]: Format } = {
 
 // const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
-export default function EditorPage() {
-  const [value, setValue] = useState(initialValue);
-  const renderElement = useCallback(props => <Element {...props} />, []);
-  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-
-  return (
-    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
-      <Toolbar />
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        placeholder="Enter text..."
-        spellCheck
-        autoFocus
-        onKeyDown={event => {
-          for (const hotkey in HOTKEYS) {
-            if (isHotkey(hotkey, event as any)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
-            }
-          }
-        }}
-      />
-    </Slate>
-  );
-}
-
 const initialValue: Node[] = [
   {
     type: 'paragraph',
@@ -79,3 +50,33 @@ const initialValue: Node[] = [
     children: [{ text: 'Try it out for yourself!' }],
   },
 ];
+
+export default function EditorPage(): JSX.Element {
+  const [value, setValue] = useState(initialValue);
+  const renderElement = useCallback(props => <Element {...props} />, []);
+  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  return (
+    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+      <Toolbar />
+      <Editable
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+        placeholder="Enter text..."
+        spellCheck
+        autoFocus
+        onKeyDown={event => {
+          for (const hotkey in HOTKEYS) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (isHotkey(hotkey, event as any)) {
+              event.preventDefault();
+              const mark = HOTKEYS[hotkey];
+              toggleMark(editor, mark);
+            }
+          }
+        }}
+      />
+    </Slate>
+  );
+}

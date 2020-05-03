@@ -7,7 +7,7 @@ export type Props = RenderElementProps & {
   element: ExtendedElement;
 };
 
-export default function Element(props: Props) {
+export default function Element(props: Props): JSX.Element {
   const { element, attributes, children } = props;
 
   switch (element.type) {

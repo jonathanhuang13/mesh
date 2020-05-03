@@ -8,7 +8,7 @@ export type Props = RenderLeafProps & {
   text: ExtendedText;
 };
 
-export default function Leaf(props: Props) {
+export default function Leaf(props: Props): JSX.Element {
   const { attributes, leaf } = props;
   let { children } = props;
 

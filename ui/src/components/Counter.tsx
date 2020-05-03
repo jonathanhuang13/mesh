@@ -11,14 +11,8 @@ type Props = {
   counter: number;
 };
 
-export default function Counter(props: Props) {
-  const {
-    increment,
-    incrementIfOdd,
-    incrementAsync,
-    decrement,
-    counter
-  } = props;
+export default function Counter(props: Props): JSX.Element {
+  const { increment, incrementIfOdd, incrementAsync, decrement, counter } = props;
 
   return (
     <div>
@@ -31,36 +25,16 @@ export default function Counter(props: Props) {
         {counter}
       </div>
       <div className={styles.btnGroup}>
-        <button
-          className={styles.btn}
-          onClick={increment}
-          data-tclass="btn"
-          type="button"
-        >
+        <button className={styles.btn} onClick={increment} data-tclass="btn" type="button">
           <i className="fa fa-plus" />
         </button>
-        <button
-          className={styles.btn}
-          onClick={decrement}
-          data-tclass="btn"
-          type="button"
-        >
+        <button className={styles.btn} onClick={decrement} data-tclass="btn" type="button">
           <i className="fa fa-minus" />
         </button>
-        <button
-          className={styles.btn}
-          onClick={incrementIfOdd}
-          data-tclass="btn"
-          type="button"
-        >
+        <button className={styles.btn} onClick={incrementIfOdd} data-tclass="btn" type="button">
           odd
         </button>
-        <button
-          className={styles.btn}
-          onClick={() => incrementAsync()}
-          data-tclass="btn"
-          type="button"
-        >
+        <button className={styles.btn} onClick={() => incrementAsync()} data-tclass="btn" type="button">
           async
         </button>
       </div>
