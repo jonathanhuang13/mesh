@@ -6,7 +6,7 @@ import styles from './styles.css';
 
 export interface Props {}
 
-export default function Toolbar(_: Props) {
+export default function Toolbar(_: Props): JSX.Element {
   return (
     <div className={styles.toolbar}>
       <MarkButton format={Format.Bold} />
@@ -18,7 +18,7 @@ export interface ButtonProps {
   format: Format;
 }
 
-function MarkButton(props: ButtonProps) {
+function MarkButton(props: ButtonProps): JSX.Element {
   const editor = useSlate();
   const { format } = props;
   const isActive = isMarkActive(editor, format);
