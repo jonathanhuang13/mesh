@@ -2,7 +2,7 @@ import React from 'react';
 import { useSlate } from 'slate-react';
 
 import { toggleMark, Format, isMarkActive } from '../../slatejs/mark';
-import styles from './styles.css';
+import styles from './styles.scss';
 
 export interface Props {}
 
