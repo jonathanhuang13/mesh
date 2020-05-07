@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -8,19 +8,3 @@ const client = new ApolloClient({
 });
 
 export default client;
-
-const query = gql`
-  query getNotes {
-    notes {
-      id
-    }
-  }
-`;
-
-client
-  .query({
-    query,
-  })
-  .then(res => {
-    console.log(res);
-  });
