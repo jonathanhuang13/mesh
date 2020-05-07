@@ -6,6 +6,9 @@ import { History } from 'history';
 import { Store } from '../reducers/types';
 import Routes from '../Routes';
 
+import client from '../apollo-client';
+client;
+
 type Props = {
   store: Store;
   history: History;
