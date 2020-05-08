@@ -10,6 +10,10 @@ Zettelkasten
 2. `cd api && cp config.json.sample config.json` and fill in the username and password of the Neo4j database you just created into the `config.json` fields
 3. `cd api/ && npm run dev` You should now be able to go to `http://localhost:4000/graphql` to make some graphql queries. See the `api/src/__fixtures__/` folder for example queries and mutations
 
+### UI
+
+1. `cd ui && npm run dev` This should start an electron app
+
 ## Resources
 
 ### Neo4j and Cypher
