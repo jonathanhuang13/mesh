@@ -1,14 +1,11 @@
 .container {
   position: absolute;
-  top: 30%;
-  left: 10px;
-  text-align: center;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 250px auto;
 }
 
-.container h2 {
-  font-size: 5rem;
-}
-
-.container a {
-  font-size: 1.4rem;
+.editor {
+  grid-column-start: 2;
 }

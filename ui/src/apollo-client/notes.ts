@@ -15,7 +15,11 @@ export interface Note {
   tags: { id: TagId; name: string }[];
 }
 
-export interface ListParams {
+export interface ListData {
+  notes: Note[];
+}
+
+export interface ListVars {
   ids?: string[];
   tagIds?: string[];
 }
