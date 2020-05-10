@@ -5,6 +5,7 @@ import { TagId } from './tags';
 export type NoteId = string;
 
 export interface Note {
+  __typename: 'Note';
   id: NoteId;
   title: string;
   content: string;
@@ -15,7 +16,11 @@ export interface Note {
   tags: { id: TagId; name: string }[];
 }
 
-export interface ListParams {
+export interface ListData {
+  notes: Note[];
+}
+
+export interface ListVars {
   ids?: string[];
   tagIds?: string[];
 }

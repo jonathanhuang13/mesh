@@ -4,7 +4,7 @@ import { hot } from 'react-hot-loader/root';
 import { ApolloProvider, ApolloClient, NormalizedCacheObject } from '@apollo/client';
 
 import routes from '../constants/routes';
-import HomePage from './HomePage';
+import HomePage from './Home';
 import EditorPage from './EditorPage';
 
 type Props = {
