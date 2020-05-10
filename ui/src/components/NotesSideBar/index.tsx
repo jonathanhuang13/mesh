@@ -1,22 +1,20 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
 
 import styles from './styles.scss';
-import { LIST_NOTES_QUERY, ListVars, ListData, Note } from '../../apollo-client/notes';
+import { Note } from '../../apollo-client/notes';
 
-export interface Props {}
+export interface Props {
+  notes: Note[];
+  selectNote: (note: Note) => void;
+}
 
-export default function NotesSideBar(_props: Props): JSX.Element {
-  const { loading, error, data } = useQuery<ListData, ListVars>(LIST_NOTES_QUERY);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{`error: ${error.message}`}</p>;
-  if (!data || data.notes.length === 0) return <p>No notes</p>;
+export default function NotesSideBar(props: Props): JSX.Element {
+  const { notes, selectNote } = props;
 
   return (
     <div className={styles.container}>
-      {data.notes.map(note => (
-        <NoteCard key={note.id} note={note} />
+      {notes.map(note => (
+        <NoteCard key={note.id} note={note} selectNote={selectNote} />
       ))}
     </div>
   );
@@ -24,13 +22,14 @@ export default function NotesSideBar(_props: Props): JSX.Element {
 
 export interface NoteCardProps {
   note: Note;
+  selectNote: (note: Note) => void;
 }
 
 function NoteCard(props: NoteCardProps): JSX.Element {
-  const { note } = props;
+  const { note, selectNote } = props;
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={styles.cardContainer} onClick={() => selectNote(note)}>
       <h3> {note.title} </h3>
       <div>{note.content}</div>
     </div>

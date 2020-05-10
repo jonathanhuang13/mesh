@@ -5,6 +5,7 @@ import { TagId } from './tags';
 export type NoteId = string;
 
 export interface Note {
+  __typename: 'Note';
   id: NoteId;
   title: string;
   content: string;

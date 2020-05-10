@@ -8,6 +8,7 @@ import Element from './element';
 import Leaf from './leaf';
 import Toolbar from '../Toolbar';
 
+import { Note } from '../../apollo-client/notes';
 import { toggleMark, Format } from '../../slatejs/mark';
 
 const HOTKEYS: { [k: string]: Format } = {
@@ -51,14 +52,18 @@ const initialValue: Node[] = [
   },
 ];
 
-export default function EditorPage(): JSX.Element {
+export interface Props {
+  note: Note | null;
+}
+
+export default function EditorPage(_: Props): JSX.Element {
   const [value, setValue] = useState(initialValue);
-  const renderElement = useCallback(props => <Element {...props} />, []);
-  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+  const renderElement = useCallback(renderProps => <Element {...renderProps} />, []);
+  const renderLeaf = useCallback(renderProps => <Leaf {...renderProps} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
-    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+    <Slate editor={editor} value={value} onChange={v => setValue(v)}>
       <Toolbar />
       <Editable
         renderElement={renderElement}
