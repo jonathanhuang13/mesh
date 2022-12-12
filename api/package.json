@@ -31,7 +31,7 @@
     "apollo-datasource": "^0.7.0",
     "apollo-server-express": "^2.11.0",
     "bluebird": "^3.7.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graphql": "^14.6.0",
     "lodash": "^4.17.15",
     "module-alias": "^2.2.2",
